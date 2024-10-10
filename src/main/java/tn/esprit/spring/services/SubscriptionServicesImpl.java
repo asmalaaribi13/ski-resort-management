@@ -69,12 +69,29 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         }
     }
 
-   // @Scheduled(cron = "* 0 9 1 * *") /* Cron expression to run a job every month at 9am */
-    @Scheduled(cron = "*/30 * * * * *") /* Cron expression to run a job every 30 secondes */
-    public void showMonthlyRecurringRevenue() {
-        Float revenue = subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.MONTHLY)
-                + subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.SEMESTRIEL)/6
-                + subscriptionRepository.recurringRevenueByTypeSubEquals(TypeSubscription.ANNUAL)/12;
-        log.info("Monthly Revenue = " + revenue);
+
+    // Adding advanced methods for Unit Testing
+
+
+    public Float calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
+        List<Subscription> subscriptions = subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
+        return subscriptions.stream().map(Subscription::getPrice).reduce(0f, Float::sum);
     }
+
+
+    public List<Subscription> findSubscriptionsExpiringSoon() {
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysLater = today.plusDays(7);
+        return subscriptionRepository.getSubscriptionsByStartDateBetween(today, sevenDaysLater);
+    }
+
+
+    public Float calculateAverageSubscriptionDuration() {
+        List<Subscription> subscriptions = (List<Subscription>) subscriptionRepository.findAll();
+        return (float) subscriptions.stream()
+                .mapToLong(sub -> sub.getEndDate().toEpochDay() - sub.getStartDate().toEpochDay())
+                .average()
+                .orElse(0.0);
+    }
+
 }
