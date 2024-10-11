@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tn.esprit.spring.entities.Skier;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
+import tn.esprit.spring.repositories.ISkierRepository;
 import tn.esprit.spring.repositories.ISubscriptionRepository;
 import tn.esprit.spring.services.SubscriptionServicesImpl;
 
@@ -21,6 +23,9 @@ public class SubscriptionServicesImplMockTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
+
+    @Mock
+    private ISkierRepository skierRepository; // Ajout de la simulation pour skierRepository
 
     @InjectMocks
     private SubscriptionServicesImpl subscriptionService;
@@ -70,7 +75,6 @@ public class SubscriptionServicesImplMockTest {
         assertEquals(1, result.size());
     }
 
-
     @Test
     public void testRetrieveSubscriptionsByDates() {
         List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 100f, TypeSubscription.ANNUAL));
@@ -84,6 +88,9 @@ public class SubscriptionServicesImplMockTest {
     public void testRetrieveSubscriptions() {
         List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.now(), LocalDate.now().plusDays(1), 100f, TypeSubscription.MONTHLY));
         when(subscriptionRepository.findDistinctOrderByEndDateAsc()).thenReturn(subscriptions);
+
+        // Simuler le comportement du skierRepository
+        when(skierRepository.findBySubscription(subscriptions.get(0))).thenReturn(new Skier()); // Ajoutez un Skier fictif pour éviter le NullPointerException
 
         subscriptionService.retrieveSubscriptions();
         // Log verification can be done with logging frameworks
