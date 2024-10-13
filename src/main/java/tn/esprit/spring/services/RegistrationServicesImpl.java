@@ -51,6 +51,10 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
             log.info("Sorry, you're already register to this course of the week :" + registration.getNumWeek());
             return null;
         }
+        if (skier.getDateOfBirth() == null) {
+            log.info("Skier's date of birth is missing.");
+            return null;
+        }
 
         int ageSkieur = Period.between(skier.getDateOfBirth(), LocalDate.now()).getYears();
         log.info("Age " + ageSkieur);

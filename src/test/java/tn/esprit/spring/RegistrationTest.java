@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class RegistrationTest {
@@ -58,8 +59,11 @@ public class RegistrationTest {
     @Test
     void testAddRegistrationAndAssignToSkierAndCourse() {
         Registration registration = new Registration();
+        registration.setNumWeek(1);  // Ensure registration has a valid week number
+
         Skier skier = new Skier();
         skier.setNumSkier(1L);
+        skier.setDateOfBirth(LocalDate.of(2010, 1, 1));  // Skier is younger than 16
 
         Course course = new Course();
         course.setNumCourse(1L);
@@ -68,6 +72,7 @@ public class RegistrationTest {
         when(skierRepository.findById(1L)).thenReturn(Optional.of(skier));
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(1, 1L, 1L)).thenReturn(0L);
+        when(registrationRepository.countByCourseAndNumWeek(course, 1)).thenReturn(0L);
         when(registrationRepository.save(any(Registration.class))).thenReturn(registration);
 
         Registration result = registrationServices.addRegistrationAndAssignToSkierAndCourse(registration, 1L, 1L);
@@ -75,5 +80,6 @@ public class RegistrationTest {
         assertNotNull(result);
         verify(registrationRepository, times(1)).save(registration);
     }
+
 
 }
