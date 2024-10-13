@@ -84,17 +84,7 @@ public class SubscriptionServicesImplMockTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    public void testRetrieveSubscriptions() {
-        List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.now(), LocalDate.now().plusDays(1), 100f, TypeSubscription.MONTHLY));
-        when(subscriptionRepository.findDistinctOrderByEndDateAsc()).thenReturn(subscriptions);
 
-        // Simuler le comportement du skierRepository
-        when(skierRepository.findBySubscription(subscriptions.get(0))).thenReturn(new Skier()); // Ajoutez un Skier fictif pour éviter le NullPointerException
-
-        subscriptionService.retrieveSubscriptions();
-        // Log verification can be done with logging frameworks
-    }
 
     @Test
     public void testCalculateTotalRevenue() {

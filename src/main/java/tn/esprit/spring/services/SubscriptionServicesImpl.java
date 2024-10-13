@@ -59,16 +59,6 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         return subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
     }
 
-    @Override
-    @Scheduled(cron = "*/30 * * * * *") /* Cron expression to run a job every 30 secondes */
-    public List<Subscription> retrieveSubscriptions() {
-        for (Subscription sub: subscriptionRepository.findDistinctOrderByEndDateAsc()) {
-            Skier   aSkier = skierRepository.findBySubscription(sub);
-            log.info(sub.getNumSub().toString() + " | "+ sub.getEndDate().toString()
-                    + " | "+ aSkier.getFirstName() + " " + aSkier.getLastName());
-        }
-        return null;
-    }
 
 
     // Adding advanced methods for Unit Testing
