@@ -13,6 +13,9 @@ import tn.esprit.spring.repositories.ICourseRepository;
 import tn.esprit.spring.repositories.IRegistrationRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
 import tn.esprit.spring.services.RegistrationServicesImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,27 +61,34 @@ public class RegistrationTest {
 
     @Test
     void testAddRegistrationAndAssignToSkierAndCourse() {
-        Registration registration = new Registration();
-        registration.setNumWeek(1);  // Ensure registration has a valid week number
+        try{
+            Registration registration = new Registration();
+            registration.setNumWeek(1);
 
-        Skier skier = new Skier();
-        skier.setNumSkier(1L);
-        skier.setDateOfBirth(LocalDate.of(2010, 1, 1));  // Skier is younger than 16
+            Skier skier = new Skier();
+            skier.setNumSkier(1L);
+            skier.setDateOfBirth(LocalDate.of(2010, 1, 1));
 
-        Course course = new Course();
-        course.setNumCourse(1L);
-        course.setTypeCourse(TypeCourse.COLLECTIVE_CHILDREN);
+            Course course = new Course();
+            course.setNumCourse(1L);
+            course.setTypeCourse(TypeCourse.COLLECTIVE_CHILDREN);
 
-        when(skierRepository.findById(1L)).thenReturn(Optional.of(skier));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-        when(registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(1, 1L, 1L)).thenReturn(0L);
-        when(registrationRepository.countByCourseAndNumWeek(course, 1)).thenReturn(0L);
-        when(registrationRepository.save(any(Registration.class))).thenReturn(registration);
+            when(skierRepository.findById(1L)).thenReturn(Optional.of(skier));
+            when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+            when(registrationRepository.countDistinctByNumWeekAndSkier_NumSkierAndCourse_NumCourse(1, 1L, 1L)).thenReturn(0L);
+            when(registrationRepository.countByCourseAndNumWeek(course, 1)).thenReturn(0L);
+            when(registrationRepository.save(any(Registration.class))).thenReturn(registration);
 
-        Registration result = registrationServices.addRegistrationAndAssignToSkierAndCourse(registration, 1L, 1L);
+            Registration result = registrationServices.addRegistrationAndAssignToSkierAndCourse(registration, 1L, 1L);
 
-        assertNotNull(result);
-        verify(registrationRepository, times(1)).save(registration);
+            assertNotNull(result);
+            verify(registrationRepository, times(1)).save(registration);
+        }
+        catch (Exception e) {
+            final Logger log = LoggerFactory.getLogger(RegistrationServicesImpl.class);
+            log.error("Error during registration: ", e);
+            throw e;
+        }
     }
 
 
