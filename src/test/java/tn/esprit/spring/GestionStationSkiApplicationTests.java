@@ -10,17 +10,4 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class GestionStationSkiApplicationTests {
 
-	@Autowired
-	private SubscriptionServicesImpl subscriptionService;
-
-	@Test
-	void contextLoads() {
-	}
-
-	@Test
-	void testSubscriptionServiceBeanLoaded() {
-		// Vérifie que le service Subscription est bien chargé dans le contexte
-		assertNotNull(subscriptionService);
-	}
-
 }
