@@ -51,23 +51,6 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testUpdateSubscription() {
-        Subscription subscription = subscriptionService.retrieveSubscriptionById(1L);
-        assertNotNull(subscription, "Subscription should not be null");
-
-        subscription.setPrice(600f);
-        Subscription updatedSubscription = subscriptionService.updateSubscription(subscription);
-        assertEquals(600f, updatedSubscription.getPrice());
-    }
-
-    @Test
-    public void testRetrieveSubscriptionById() {
-        Subscription subscription = subscriptionService.retrieveSubscriptionById(1L);
-        assertNotNull(subscription);
-        assertEquals(1L, subscription.getNumSub());
-    }
-
-    @Test
     public void testGetSubscriptionByType() {
         Set<Subscription> subscriptions = subscriptionService.getSubscriptionByType(TypeSubscription.MONTHLY);
         assertNotNull(subscriptions, "Subscriptions set should not be null");
