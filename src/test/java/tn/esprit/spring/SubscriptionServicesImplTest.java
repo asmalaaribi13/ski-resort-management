@@ -7,14 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.services.SubscriptionServicesImpl;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class SubscriptionServicesImplTest {
@@ -38,15 +35,7 @@ public class SubscriptionServicesImplTest {
         subscription2.setPrice(300f);
         subscription2.setTypeSub(TypeSubscription.MONTHLY);
         subscriptionService.addSubscription(subscription2);
-
-        Subscription subscription3 = new Subscription();
-        subscription3.setStartDate(LocalDate.of(2023, 4, 1));
-        subscription3.setEndDate(LocalDate.of(2024, 3, 31));
-        subscription3.setPrice(450f);
-        subscription3.setTypeSub(TypeSubscription.ANNUAL);
-        subscriptionService.addSubscription(subscription3);
     }
-
 
     @Test
     public void testAddSubscription() {
@@ -110,4 +99,10 @@ public class SubscriptionServicesImplTest {
         assertTrue(subscriptions.size() > 0, "Should return at least one subscription expiring soon");
     }
 
+    @Test
+    public void testCalculateAverageSubscriptionDuration() {
+        Float averageDuration = subscriptionService.calculateAverageSubscriptionDuration();
+        assertNotNull(averageDuration, "Average duration should not be null");
+        assertTrue(averageDuration > 0, "Average duration should be greater than 0");
+    }
 }
