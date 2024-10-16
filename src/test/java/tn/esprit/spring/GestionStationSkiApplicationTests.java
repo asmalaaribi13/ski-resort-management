@@ -10,4 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 class GestionStationSkiApplicationTests {
 
+    @Test
+    void contextLoads(){};
+
 }

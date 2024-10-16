@@ -19,6 +19,8 @@ public class SubscriptionServicesImplTest {
     @Autowired
     private SubscriptionServicesImpl subscriptionService;
 
+    private Long testSubscriptionId;
+
     @BeforeEach
     public void setup() {
         // Créer des données de test
@@ -27,7 +29,8 @@ public class SubscriptionServicesImplTest {
         subscription1.setEndDate(LocalDate.of(2023, 12, 31));
         subscription1.setPrice(500f);
         subscription1.setTypeSub(TypeSubscription.ANNUAL);
-        subscriptionService.addSubscription(subscription1);
+        Subscription savedSubscription1 = subscriptionService.addSubscription(subscription1);
+        testSubscriptionId = savedSubscription1.getNumSub(); // Initialize the testSubscriptionId
 
         Subscription subscription2 = new Subscription();
         subscription2.setStartDate(LocalDate.of(2023, 6, 1));
@@ -51,6 +54,35 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
+    public void testUpdateSubscription() {
+        // Récupérer l'abonnement existant
+        Subscription subscriptionToUpdate = subscriptionService.retrieveSubscriptionById(testSubscriptionId);
+        assertNotNull(subscriptionToUpdate, "Subscription should not be null");
+
+        // Modifier l'abonnement
+        subscriptionToUpdate.setPrice(600f);
+        Subscription updatedSubscription = subscriptionService.updateSubscription(subscriptionToUpdate);
+
+        // Vérifier que les modifications ont été appliquées
+        assertNotNull(updatedSubscription, "Updated subscription should not be null");
+        assertEquals(600f, updatedSubscription.getPrice(), "Price should be updated to 600");
+    }
+
+    @Test
+    public void testRetrieveSubscriptionById() {
+        Subscription retrievedSubscription = subscriptionService.retrieveSubscriptionById(testSubscriptionId);
+        assertNotNull(retrievedSubscription, "Subscription should not be null");
+        assertEquals(testSubscriptionId, retrievedSubscription.getNumSub(), "Should return the correct subscription by ID");
+    }
+
+
+
+
+
+
+
+
+    @Test
     public void testGetSubscriptionByType() {
         Set<Subscription> subscriptions = subscriptionService.getSubscriptionByType(TypeSubscription.MONTHLY);
         assertNotNull(subscriptions, "Subscriptions set should not be null");
@@ -64,6 +96,25 @@ public class SubscriptionServicesImplTest {
         List<Subscription> subscriptions = subscriptionService.retrieveSubscriptionsByDates(startDate, endDate);
         assertNotNull(subscriptions, "Subscriptions list should not be null");
         assertTrue(subscriptions.size() > 0, "Should return at least one subscription within the date range");
+    }
+
+    @Test
+    public void testDeleteSubscription() {
+        Subscription subscription = new Subscription();
+        subscription.setStartDate(LocalDate.now());
+        subscription.setTypeSub(TypeSubscription.ANNUAL);
+        subscription.setPrice(500f);
+        Subscription savedSubscription = subscriptionService.addSubscription(subscription);
+
+        subscriptionService.deleteSubscription(savedSubscription.getNumSub());
+        assertNull(subscriptionService.retrieveSubscriptionById(savedSubscription.getNumSub()), "Subscription should be null after deletion");
+    }
+
+    @Test
+    public void testGetAllSubscriptions() {
+        List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
+        assertNotNull(subscriptions, "Subscriptions list should not be null");
+        assertTrue(subscriptions.size() > 0, "Should return at least one subscription");
     }
 
     @Test

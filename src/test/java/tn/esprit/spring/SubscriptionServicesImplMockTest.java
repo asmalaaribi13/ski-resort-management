@@ -15,8 +15,7 @@ import tn.esprit.spring.services.SubscriptionServicesImpl;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 public class SubscriptionServicesImplMockTest {
@@ -83,6 +82,28 @@ public class SubscriptionServicesImplMockTest {
         List<Subscription> result = subscriptionService.retrieveSubscriptionsByDates(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31));
         assertEquals(1, result.size());
     }
+
+    @Test
+    public void testDeleteSubscription() {
+        Subscription subscription = new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 100f, TypeSubscription.MONTHLY);
+        when(subscriptionRepository.findById(1L)).thenReturn(Optional.of(subscription));
+
+        subscriptionService.deleteSubscription(1L);
+        when(subscriptionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Subscription deletedSubscription = subscriptionService.retrieveSubscriptionById(1L);
+        assertNull(deletedSubscription, "Subscription should be null after deletion");
+    }
+
+    @Test
+    public void testGetAllSubscriptions() {
+        List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 100f, TypeSubscription.MONTHLY));
+        when(subscriptionRepository.findAll()).thenReturn(subscriptions);
+
+        List<Subscription> result = subscriptionService.getAllSubscriptions();
+        assertEquals(1, result.size());
+    }
+
 
 
 

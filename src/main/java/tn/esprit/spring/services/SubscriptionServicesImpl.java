@@ -54,15 +54,21 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         return subscriptionRepository.findByTypeSubOrderByStartDateAsc(type);
     }
 
+
     @Override
     public List<Subscription> retrieveSubscriptionsByDates(LocalDate startDate, LocalDate endDate) {
         return subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
     }
 
+    @Override
+    public void deleteSubscription(Long numSubscription) {
+        subscriptionRepository.deleteById(numSubscription);
+    }
 
-
-    // Adding advanced methods for Unit Testing
-
+    @Override
+    public List<Subscription> getAllSubscriptions() {
+        return (List<Subscription>) subscriptionRepository.findAll();
+    }
 
     public Float calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
         List<Subscription> subscriptions = subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
