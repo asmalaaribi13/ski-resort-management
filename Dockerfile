@@ -1,6 +1,8 @@
 FROM openjdk:17-jdk-alpine
 
-COPY target/gestion-station-ski.jar gestion-station-ski.jar
+ARG JAR_FILE=target/*.jar
+
+COPY ${JAR_FILE} gestion-station-ski.jar
 
 EXPOSE 8081
 
