@@ -1,5 +1,5 @@
-# Utiliser une image de base JDK
-FROM openjdk:17-jdk-alpine
+# Utiliser une image de base JDK 17 slim
+FROM openjdk:17-jdk-slim
 
 # Définir le répertoire de travail
 WORKDIR /app
