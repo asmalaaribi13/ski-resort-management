@@ -1,3 +1,18 @@
+# Exclude unnecessary files
+.jpb
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore other common files (optional but recommended)
+target/
+*.log
+*.class
+*.jar
+*.war
+*.iml
+
+# Existing rules
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
