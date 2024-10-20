@@ -77,8 +77,8 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
                 }
                 else{
                     log.info("Sorry, your age doesn't allow you to register for this course ! \n Try to Register to a Collective Adult Course...");
+                    return null;
                 }
-                break;
 
             default:
                 if (ageSkieur >= 16) {
@@ -92,8 +92,8 @@ public class RegistrationServicesImpl implements  IRegistrationServices{
                     }
                 }
                 log.info("Sorry, your age doesn't allow you to register for this course ! \n Try to Register to a Collective Child Course...");
+                return null;
         }
-        return registration;
 
     }
     private Registration assignRegistration (Registration registration, Skier skier, Course course){

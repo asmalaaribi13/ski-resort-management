@@ -103,7 +103,7 @@ public class RegistrationTest {
 
         Registration result = registrationServices.addRegistrationAndAssignToSkierAndCourse(registration, 1L, 1L);
 
-        assertNull(result);  
+        assertNull(result);
         verify(registrationRepository, never()).save(any(Registration.class));
     }
     @Test
