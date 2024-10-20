@@ -3,9 +3,13 @@ package tn.esprit.spring.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Course;
 import tn.esprit.spring.entities.TypeCourse;
+import tn.esprit.spring.services.CourseServicesImpl;
 import tn.esprit.spring.services.ICourseServices;
 
 import java.util.List;
@@ -40,6 +44,16 @@ public class CourseRestController {
     @GetMapping("/get/{id-course}")
     public Course getById(@PathVariable("id-course") Long numCourse){
         return courseServices.retrieveCourse(numCourse);
+    }
+
+
+    @Autowired
+    private CourseServicesImpl courseService;
+
+    @GetMapping("/byType")
+    public ResponseEntity<List<Course>> getCoursesByType(@RequestParam TypeCourse type) {
+        List<Course> courses = courseService.findCoursesByType(type);
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
 }

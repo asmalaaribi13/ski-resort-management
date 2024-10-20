@@ -15,5 +15,6 @@ public interface ICourseServices {
 
     Course retrieveCourse(Long numCourse);
 
+    List<Course> findCoursesByType(TypeCourse type);
 
 }
