@@ -1,21 +1,25 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Clean and compile') {
             steps {
-                echo 'Building...'
+                sh "mvn clean"
+                sh "mvn compile"
+                sh "mvn package"
             }
         }
+
         stage('Test') {
             steps {
                 echo 'Testing...'
             }
         }
-        stage('Deploy') {
+        stage('SonarQube') {
             steps {
-                echo 'Deploying...'
+                sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=123456789"
             }
         }
+
     }
 }
 
