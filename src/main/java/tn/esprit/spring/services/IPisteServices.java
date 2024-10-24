@@ -1,6 +1,7 @@
 package tn.esprit.spring.services;
 
 
+import tn.esprit.spring.dto.PisteDTO;
 import tn.esprit.spring.entities.Color;
 import tn.esprit.spring.entities.Piste;
 
@@ -10,7 +11,7 @@ public interface IPisteServices {
 
     List<Piste> retrieveAllPistes();
 
-    Piste  addPiste(Piste  piste);
+    Piste addPiste(PisteDTO pisteDTO);
 
     void removePiste (Long numPiste);
 

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tn.esprit.spring.dto.PisteDTO;
 import tn.esprit.spring.entities.Color;
 import tn.esprit.spring.entities.Piste;
 import tn.esprit.spring.entities.Skier;
@@ -61,18 +62,34 @@ import static org.mockito.Mockito.*;
         verify(pisteRepository, times(1)).findAll();
     }
 
-    @Test
-    void addPiste() {
-        // Mocking the repository save method
-        when(pisteRepository.save(piste)).thenReturn(piste);
-        // Calling the method under test
-        Piste savedPiste = pisteService.addPiste(piste);
-        // Asserting the results
-        assertNotNull(savedPiste);
-        assertEquals("Piste A", savedPiste.getNamePiste());
-        // Verifying the interaction with the mocked repository
-        verify(pisteRepository, times(1)).save(piste);
-    }
+       @Test
+       void addPiste() {
+           // Create a PisteDTO for testing
+           PisteDTO pisteDTO = new PisteDTO("Piste A", "RED", 500, 30);
+
+           // Mock the conversion and repository save behavior
+           Piste piste = new Piste();
+           piste.setNamePiste(pisteDTO.getNamePiste());
+           piste.setColor(Color.valueOf(pisteDTO.getColor().toUpperCase()));
+           piste.setLength(pisteDTO.getLength());
+           piste.setSlope(pisteDTO.getSlope());
+
+           // Mocking the repository save method
+           when(pisteRepository.save(any(Piste.class))).thenReturn(piste);
+
+           // Calling the method under test
+           Piste savedPiste = pisteService.addPiste(pisteDTO);
+
+           // Asserting the results
+           assertNotNull(savedPiste);
+           assertEquals("Piste A", savedPiste.getNamePiste());
+           assertEquals(Color.RED, savedPiste.getColor());
+           assertEquals(500, savedPiste.getLength());
+           assertEquals(30, savedPiste.getSlope());
+
+           // Verifying the interaction with the mocked repository
+           verify(pisteRepository, times(1)).save(any(Piste.class));
+       }
     @Test
     void removePiste() {
         // Act
