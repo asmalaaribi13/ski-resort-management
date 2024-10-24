@@ -1,9 +1,7 @@
 package tn.esprit.spring.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.Color;
 import tn.esprit.spring.entities.Piste;
@@ -54,7 +52,7 @@ public class PisteServicesImpl implements  IPisteServices{
     @Override
     public Piste addPisteAndAssignToSkier(Piste piste, Long skierId) {
         Skier skier = skierRepository.findById(skierId)
-                .orElseThrow(() -> new EntityNotFoundException("Skier not found with ID: " + skierId));
+                .orElseThrow(() -> new EntityNotFoundException("Skier not found  ID: " + skierId));
 
 
         Piste savedPiste = pisteRepository.save(piste);
