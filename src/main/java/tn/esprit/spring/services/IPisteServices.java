@@ -25,8 +25,5 @@ public interface IPisteServices {
 
     Piste addPisteAndAssignToSkiers(Piste piste, List<Long> skierIds);
 
-     List<Piste> findPistesForSkierByAge(Long skierId);
-
-     List<Piste> findPopularPistes(int minCourses);
 
 }
