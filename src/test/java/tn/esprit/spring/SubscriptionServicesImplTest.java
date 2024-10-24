@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class SubscriptionServicesImplTest {
+ class SubscriptionServicesImplTest {
 
     @Autowired
     private SubscriptionServicesImpl subscriptionService;
@@ -44,7 +44,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testAddSubscription() {
+     void testAddSubscription() {
         System.out.println("Running testAddSubscription...");
         Subscription subscription = new Subscription();
         subscription.setStartDate(LocalDate.now());
@@ -60,7 +60,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testUpdateSubscription() {
+     void testUpdateSubscription() {
         // Récupérer l'abonnement existant
         System.out.println("Running testUpdateSubscription...");
         Subscription subscriptionToUpdate = subscriptionService.retrieveSubscriptionById(testSubscriptionId);
@@ -78,7 +78,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testRetrieveSubscriptionById() {
+     void testRetrieveSubscriptionById() {
         System.out.println("Running testRetrieveSubscriptionById...");
         Subscription retrievedSubscription = subscriptionService.retrieveSubscriptionById(testSubscriptionId);
         assertNotNull(retrievedSubscription, "Subscription should not be null");
@@ -87,7 +87,7 @@ public class SubscriptionServicesImplTest {
         System.out.println("testRetrieveSubscriptionById passed!");
     }
     @Test
-    public void testGetSubscriptionByType() {
+     void testGetSubscriptionByType() {
         System.out.println("Running testGetSubscriptionByType...");
         Set<Subscription> subscriptions = subscriptionService.getSubscriptionByType(TypeSubscription.MONTHLY);
         assertNotNull(subscriptions, "Subscriptions set should not be null");
@@ -97,7 +97,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testRetrieveSubscriptionsByDates() {
+     void testRetrieveSubscriptionsByDates() {
         System.out.println("Running testRetrieveSubscriptionsByDates...");
         LocalDate startDate = LocalDate.of(2023, 1, 1);
         LocalDate endDate = LocalDate.of(2023, 12, 31);
@@ -109,7 +109,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testDeleteSubscription() {
+     void testDeleteSubscription() {
         System.out.println("Running testDeleteSubscription...");
         Subscription subscription = new Subscription();
         subscription.setStartDate(LocalDate.now());
@@ -124,7 +124,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testGetAllSubscriptions() {
+     void testGetAllSubscriptions() {
         System.out.println("Running testGetAllSubscriptions...");
         List<Subscription> subscriptions = subscriptionService.getAllSubscriptions();
         assertNotNull(subscriptions, "Subscriptions list should not be null");
@@ -134,7 +134,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testCalculateTotalRevenue() {
+     void testCalculateTotalRevenue() {
         System.out.println("Running testCalculateTotalRevenue...");
         LocalDate startDate = LocalDate.of(2023, 1, 1);
         LocalDate endDate = LocalDate.of(2023, 12, 31);
@@ -146,7 +146,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testFindSubscriptionsExpiringSoon() {
+     void testFindSubscriptionsExpiringSoon() {
         System.out.println("Running testFindSubscriptionsExpiringSoon...");
         List<Subscription> subscriptions = subscriptionService.findSubscriptionsExpiringSoon();
         assertNotNull(subscriptions, "Subscriptions list should not be null");
@@ -156,7 +156,7 @@ public class SubscriptionServicesImplTest {
     }
 
     @Test
-    public void testCalculateAverageSubscriptionDuration() {
+     void testCalculateAverageSubscriptionDuration() {
         System.out.println("Running testCalculateAverageSubscriptionDuration...");
         Float averageDuration = subscriptionService.calculateAverageSubscriptionDuration();
         assertNotNull(averageDuration, "Average duration should not be null");

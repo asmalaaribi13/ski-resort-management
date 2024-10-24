@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tn.esprit.spring.entities.Skier;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.repositories.ISkierRepository;
@@ -18,7 +17,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class SubscriptionServicesImplMockTest {
+  class SubscriptionServicesImplMockTest {
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
@@ -36,7 +35,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testAddSubscription() {
+     void testAddSubscription() {
         System.out.println("Running testAddSubscription...");
         Subscription subscription = new Subscription();
         subscription.setStartDate(LocalDate.now());
@@ -52,7 +51,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testUpdateSubscription() {
+     void testUpdateSubscription() {
         System.out.println("Running testUpdateSubscription...");
         Subscription subscription = new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 500f, TypeSubscription.ANNUAL);
         when(subscriptionRepository.save(subscription)).thenReturn(subscription);
@@ -64,7 +63,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testRetrieveSubscriptionById() {
+     void testRetrieveSubscriptionById() {
         System.out.println("Running testRetrieveSubscriptionById...");
         Subscription subscription = new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 100f, TypeSubscription.MONTHLY);
         when(subscriptionRepository.findById(1L)).thenReturn(Optional.of(subscription));
@@ -76,7 +75,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testGetSubscriptionByType() {
+     void testGetSubscriptionByType() {
         System.out.println("Running testGetSubscriptionByType...");
         Set<Subscription> subscriptions = new HashSet<>(Arrays.asList(new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31), 100f, TypeSubscription.MONTHLY)));
         when(subscriptionRepository.findByTypeSubOrderByStartDateAsc(TypeSubscription.MONTHLY)).thenReturn(subscriptions);
@@ -88,7 +87,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testRetrieveSubscriptionsByDates() {
+    void testRetrieveSubscriptionsByDates() {
         System.out.println("Running testRetrieveSubscriptionsByDates...");
         List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 100f, TypeSubscription.ANNUAL));
         when(subscriptionRepository.getSubscriptionsByStartDateBetween(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31))).thenReturn(subscriptions);
@@ -100,7 +99,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testDeleteSubscription() {
+    void testDeleteSubscription() {
         System.out.println("Running testDeleteSubscription...");
         Subscription subscription = new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 100f, TypeSubscription.MONTHLY);
         when(subscriptionRepository.findById(1L)).thenReturn(Optional.of(subscription));
@@ -115,7 +114,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testGetAllSubscriptions() {
+     void testGetAllSubscriptions() {
         System.out.println("Running testGetAllSubscriptions...");
         List<Subscription> subscriptions = Arrays.asList(new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 100f, TypeSubscription.MONTHLY));
         when(subscriptionRepository.findAll()).thenReturn(subscriptions);
@@ -126,7 +125,7 @@ public class SubscriptionServicesImplMockTest {
         System.out.println("testGetAllSubscriptions passed! Number of subscriptions: " + result.size());
     }
     @Test
-    public void testCalculateTotalRevenue() {
+     void testCalculateTotalRevenue() {
         System.out.println("Running testCalculateTotalRevenue...");
         List<Subscription> subscriptions = Arrays.asList(
                 new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 100f, TypeSubscription.ANNUAL),
@@ -142,7 +141,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testFindSubscriptionsExpiringSoon() {
+     void testFindSubscriptionsExpiringSoon() {
         System.out.println("Running testFindSubscriptionsExpiringSoon...");
         List<Subscription> subscriptions = Arrays.asList(
                 new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31), 100f, TypeSubscription.ANNUAL)
@@ -157,7 +156,7 @@ public class SubscriptionServicesImplMockTest {
     }
 
     @Test
-    public void testCalculateAverageSubscriptionDuration() {
+     void testCalculateAverageSubscriptionDuration() {
         System.out.println("Running testCalculateAverageSubscriptionDuration...");
         List<Subscription> subscriptions = Arrays.asList(
                 new Subscription(1L, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 100f, TypeSubscription.ANNUAL),
