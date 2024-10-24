@@ -11,9 +11,9 @@ import tn.esprit.spring.repositories.IPisteRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
+
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @AllArgsConstructor
 @Service
