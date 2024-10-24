@@ -29,4 +29,9 @@ public class Piste implements Serializable {
 	@ManyToMany(mappedBy= "pistes")
 	private Set<Skier> skiers;
 
+	public Piste(String namePiste, Color color) {
+		this.namePiste = namePiste;
+		this.color = color;
+	}
+
 }

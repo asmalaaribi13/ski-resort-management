@@ -7,12 +7,14 @@ import org.mockito.MockitoAnnotations;
 import tn.esprit.spring.dto.PisteDTO;
 import tn.esprit.spring.entities.Color;
 import tn.esprit.spring.entities.Piste;
+import tn.esprit.spring.entities.Registration;
 import tn.esprit.spring.entities.Skier;
 import tn.esprit.spring.repositories.IPisteRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
 import tn.esprit.spring.services.PisteServicesImpl;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -186,6 +188,106 @@ import static org.mockito.Mockito.*;
         verify(pisteRepository, times(1)).findByColor(Color.BLUE);
     }
 
-}
+       @Test
+       void testFindPopularPistes_withSkierHavingEnoughCourses() {
+           // Créer des objets Piste
+           Piste piste1 = new Piste();
+           Piste piste2 = new Piste();
+
+           // Créer des skieurs
+           Skier skier1 = new Skier();
+           skier1.setRegistrations(new HashSet<>(Arrays.asList(new Registration(), new Registration()))); // 2 cours
+           skier1.setPistes(new HashSet<>(Arrays.asList(piste1)));
+
+           Skier skier2 = new Skier();
+           skier2.setRegistrations(new HashSet<>(Arrays.asList(new Registration(), new Registration(), new Registration()))); // 3 cours
+           skier2.setPistes(new HashSet<>(Arrays.asList(piste2)));
+
+           // Simuler le retour du repository
+           when(skierRepository.findAll()).thenReturn(Arrays.asList(skier1, skier2));
+
+           // Appeler la méthode à tester
+           List<Piste> result = pisteService.findPopularPistes(2);
+
+           // Vérifier les résultats
+           assertEquals(2, result.size());
+           assertEquals(new HashSet<>(Arrays.asList(piste1, piste2)), new HashSet<>(result));
+       }
+
+       @Test
+       void testFindPistesForSkierByAge_under18() {
+           // Créer un skieur de moins de 18 ans
+           Skier youngSkier = new Skier();
+           youngSkier.setNumSkier(1L);
+           youngSkier.setDateOfBirth(LocalDate.now().minusYears(15)); // 15 ans
+
+           // Créer des pistes avec des couleurs différentes
+           Piste greenPiste = new Piste("Green Piste", Color.GREEN);
+           Piste bluePiste = new Piste("Blue Piste", Color.BLUE);
+           Piste redPiste = new Piste("Red Piste", Color.RED);
+
+           // Simuler le retour du repository pour le skieur et les pistes
+           when(skierRepository.findById(1L)).thenReturn(Optional.of(youngSkier));
+           when(pisteRepository.findAll()).thenReturn(Arrays.asList(greenPiste, bluePiste, redPiste));
+
+           // Appeler la méthode à tester
+           List<Piste> result = pisteService.findPistesForSkierByAge(1L);
+
+           // Vérifier que seules les pistes vertes et bleues sont renvoyées pour un skieur de moins de 18 ans
+           assertEquals(2, result.size());
+           assertEquals(Arrays.asList(greenPiste, bluePiste), result);
+       }
+
+       @Test
+       void testFindPistesForSkierByAge_between18And50() {
+           // Créer un skieur entre 18 et 50 ans
+           Skier adultSkier = new Skier();
+           adultSkier.setNumSkier(2L);
+           adultSkier.setDateOfBirth(LocalDate.now().minusYears(30)); // 30 ans
+
+           // Créer des pistes avec des couleurs différentes
+           Piste greenPiste = new Piste("Green Piste", Color.GREEN);
+           Piste bluePiste = new Piste("Blue Piste", Color.BLUE);
+           Piste redPiste = new Piste("Red Piste", Color.RED);
+           Piste blackPiste = new Piste("Black Piste", Color.BLACK);
+
+           // Simuler le retour du repository pour le skieur et les pistes
+           when(skierRepository.findById(2L)).thenReturn(Optional.of(adultSkier));
+           when(pisteRepository.findAll()).thenReturn(Arrays.asList(greenPiste, bluePiste, redPiste, blackPiste));
+
+           // Appeler la méthode à tester
+           List<Piste> result = pisteService.findPistesForSkierByAge(2L);
+
+           // Vérifier que toutes les pistes sauf la verte sont renvoyées pour un skieur adulte
+           assertEquals(3, result.size());
+           assertEquals(Arrays.asList(bluePiste, redPiste, blackPiste), result);
+       }
+
+       @Test
+       void testFindPistesForSkierByAge_over50() {
+           // Créer un skieur de plus de 50 ans
+           Skier seniorSkier = new Skier();
+           seniorSkier.setNumSkier(3L);
+           seniorSkier.setDateOfBirth(LocalDate.now().minusYears(60)); // 60 ans
+
+           // Créer des pistes avec des couleurs différentes
+           Piste greenPiste = new Piste("Blue Piste",Color.GREEN);
+           Piste bluePiste = new Piste("Blue Piste", Color.BLUE);
+           Piste redPiste = new Piste("Red Piste", Color.RED);
+
+           // Simuler le retour du repository pour le skieur et les pistes
+           when(skierRepository.findById(3L)).thenReturn(Optional.of(seniorSkier));
+           when(pisteRepository.findAll()).thenReturn(Arrays.asList(greenPiste, bluePiste, redPiste));
+
+           // Appeler la méthode à tester
+           List<Piste> result = pisteService.findPistesForSkierByAge(3L);
+
+           // Vérifier que seules les pistes vertes et bleues sont renvoyées pour un skieur de plus de 50 ans
+           assertEquals(2, result.size());
+           assertEquals(Arrays.asList(greenPiste, bluePiste), result);
+       }
+
+
+   }
 
 

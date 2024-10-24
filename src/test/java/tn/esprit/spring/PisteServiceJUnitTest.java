@@ -5,9 +5,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.spring.dto.PisteDTO;
-import tn.esprit.spring.entities.Color;
-import tn.esprit.spring.entities.Piste;
-import tn.esprit.spring.entities.Skier;
+import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.IPisteRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
 import org.junit.jupiter.api.*;
@@ -252,7 +250,89 @@ import static org.junit.jupiter.api.Assertions.*;
 
         System.out.println("Add Piste and Assign to Multiple Skiers: Ok");
     }
+    @Test
+    @Order(10)
+    void findPopularPistes_ShouldReturnPistesForSkiersWithMinCourses() {
+        // Arrange
 
+        // Create Skier 1 with 2 registrations (doesn't meet minCourses condition of 3)
+        Skier skier1 = new Skier();
+        skier1.setFirstName("Skier 1");
+        skier1.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        skier1.setRegistrations(new HashSet<>(Arrays.asList(new Registration(), new Registration()))); // 2 registrations
+        skier1.setPistes(new HashSet<>()); // No pistes yet
+
+        // Create Skier 2 with 3 registrations (meets minCourses condition of 3)
+        Skier skier2 = new Skier();
+        skier2.setFirstName("Skier 2");
+        skier2.setDateOfBirth(LocalDate.of(1985, 5, 15));
+        skier2.setRegistrations(new HashSet<>(Arrays.asList(new Registration(), new Registration(), new Registration()))); // 3 registrations
+        skier2.setPistes(new HashSet<>()); // No pistes yet
+
+        // Save the skiers
+        skierRepository.save(skier1);
+        skierRepository.save(skier2);
+
+        // Create Piste 1 and assign it to Skier 1 (who doesn't meet the minCourses condition)
+        Piste piste1 = new Piste();
+        piste1.setNamePiste("Piste Popular 1");
+        piste1.setColor(Color.BLUE);
+        pisteRepository.save(piste1);
+        skier1.getPistes().add(piste1); // Assign piste1 to skier1
+        skierRepository.save(skier1);
+
+        // Create Piste 2 and assign it to Skier 2 (who meets the minCourses condition)
+        Piste piste2 = new Piste();
+        piste2.setNamePiste("Piste Popular 2");
+        piste2.setColor(Color.RED);
+        pisteRepository.save(piste2);
+        skier2.getPistes().add(piste2); // Assign piste2 to skier2
+        skierRepository.save(skier2);
+
+        // Act
+        List<Piste> popularPistes = pisteService.findPopularPistes(3); // minCourses = 3
+
+        // Assert
+        assertNotNull(popularPistes, "Popular pistes should not be null");
+
+        System.out.println("Find Popular Pistes: Test Passed");
+    }
+
+
+    @Test
+    @Order(11)
+    void findPistesForSkierByAge_ShouldReturnPistesBasedOnAge() {
+        // Arrange
+        Skier skier = new Skier();
+        skier.setFirstName("Young Skier");
+        skier.setDateOfBirth(LocalDate.of(2010, 1, 1));
+        skierRepository.save(skier);
+
+        Piste greenPiste = new Piste();
+        greenPiste.setNamePiste("Green Piste");
+        greenPiste.setColor(Color.GREEN);
+        pisteRepository.save(greenPiste);
+
+        Piste bluePiste = new Piste();
+        bluePiste.setNamePiste("Blue Piste");
+        bluePiste.setColor(Color.BLUE);
+        pisteRepository.save(bluePiste);
+
+        Piste blackPiste = new Piste();
+        blackPiste.setNamePiste("Black Piste");
+        blackPiste.setColor(Color.BLACK);
+        pisteRepository.save(blackPiste);
+        // Act
+        List<Piste> pistesForYoungSkier = pisteService.findPistesForSkierByAge(skier.getNumSkier());
+        // Assert
+        assertNotNull(pistesForYoungSkier, "Pistes list should not be null");
+        assertEquals(4, pistesForYoungSkier.size(), "Only 4 pistes (GREEN, BLUE) should be returned for young skier");
+        assertTrue(pistesForYoungSkier.stream().anyMatch(piste -> piste.getColor() == Color.GREEN), "Green piste should be included");
+        assertTrue(pistesForYoungSkier.stream().anyMatch(piste -> piste.getColor() == Color.BLUE), "Blue piste should be included");
+        assertFalse(pistesForYoungSkier.stream().anyMatch(piste -> piste.getColor() == Color.BLACK), "Black piste should not be included");
+
+        System.out.println("Find Pistes for Skier by Age: Ok");
+    }
 
 
 }

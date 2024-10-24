@@ -11,6 +11,7 @@ import tn.esprit.spring.repositories.IPisteRepository;
 import tn.esprit.spring.repositories.ISkierRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -94,6 +95,29 @@ public class PisteServicesImpl implements  IPisteServices{
         return savedPiste;
     }
 
+    @Transactional
+    @Override
+    public List<Piste> findPopularPistes(int minCourses) {
+        // Fetch all skiers
+        List<Skier> skiers = skierRepository.findAll();
+
+        // Initialize a Set to store unique popular pistes
+        Set<Piste> popularPistes = new HashSet<>();
+
+        // Loop over skiers and filter them based on the number of registrations
+        for (Skier skier : skiers) {
+            // Ensure registrations and pistes are not null
+            if (skier.getRegistrations() != null && skier.getRegistrations().size() >= minCourses) {
+                if (skier.getPistes() != null) {
+                    popularPistes.addAll(skier.getPistes());
+                }
+            }
+        }
+        // Convert the Set to List and return
+        return new ArrayList<>(popularPistes);
+    }
+
+
     @Override
     public List<Piste> findPistesForSkierByAge(Long skierId) {
         Skier skier = skierRepository.findById(skierId)
@@ -108,7 +132,7 @@ public class PisteServicesImpl implements  IPisteServices{
                     if (age < 18) {
                         // For younger skiers, restrict to easier colors
                         return piste.getColor() == Color.GREEN || piste.getColor() == Color.BLUE;
-                    } else if (age >= 18 && age <= 50) {
+                    } else if (age <= 50) {
                         // Adult skiers can go on more difficult pistes
                         return piste.getColor() == Color.BLUE || piste.getColor() == Color.RED || piste.getColor() == Color.BLACK;
                     } else {
@@ -117,26 +141,6 @@ public class PisteServicesImpl implements  IPisteServices{
                     }
                 })
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Piste> findPopularPistes(int minCourses) {
-        // Récupérer tous les skieurs
-        List<Skier> skiers = skierRepository.findAll();
-
-        // Filtrer les skieurs qui sont inscrits à au moins "minCourses" cours
-        List<Skier> activeSkiers = skiers.stream()
-                .filter(skier -> skier.getRegistrations().size() >= minCourses)
-                .collect(Collectors.toList());
-
-        // Récupérer toutes les pistes fréquentées par ces skieurs
-        Set<Piste> popularPistes = new HashSet<>();
-        for (Skier skier : activeSkiers) {
-            popularPistes.addAll(skier.getPistes());
-        }
-
-        // Convertir le Set en List pour le retour
-        return new ArrayList<>(popularPistes);
     }
 
 
