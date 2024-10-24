@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Clean and compile') {
             steps {
+                sh "env"
                 echo 'Running Maven clean...'
                 sh "mvn clean"
                 echo 'Compiling project...'
