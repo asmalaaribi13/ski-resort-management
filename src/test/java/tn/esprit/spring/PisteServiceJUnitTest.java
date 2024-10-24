@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 
-public class PisteServiceJUnitTest {
+ class PisteServiceJUnitTest {
 
     @Autowired
     private PisteServicesImpl pisteService;

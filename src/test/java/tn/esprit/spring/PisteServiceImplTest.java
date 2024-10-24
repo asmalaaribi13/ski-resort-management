@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-public class PisteServiceImplTest {
+   class PisteServiceImplTest {
     @Mock
     private IPisteRepository pisteRepository;
     @Mock
@@ -56,7 +56,7 @@ public class PisteServiceImplTest {
         // Asserting the results
         assertNotNull(actualPistes);
         assertEquals(1, actualPistes.size());
-        assertEquals("Piste A", actualPistes.get(0).getNamePiste());
+        assertEquals(300, actualPistes.get(0).getLength());
         // Verifying the interaction with the mocked repository
         verify(pisteRepository, times(1)).findAll();
     }

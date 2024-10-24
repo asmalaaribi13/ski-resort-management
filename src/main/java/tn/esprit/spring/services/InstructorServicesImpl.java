@@ -15,37 +15,5 @@ import java.util.Set;
 @Service
 public class InstructorServicesImpl implements IInstructorServices{
 
-    private IInstructorRepository instructorRepository;
-    private ICourseRepository courseRepository;
-
-    @Override
-    public Instructor addInstructor(Instructor instructor) {
-        return instructorRepository.save(instructor);
-    }
-
-    @Override
-    public List<Instructor> retrieveAllInstructors() {
-        return instructorRepository.findAll();
-    }
-
-    @Override
-    public Instructor updateInstructor(Instructor instructor) {
-        return instructorRepository.save(instructor);
-    }
-
-    @Override
-    public Instructor retrieveInstructor(Long numInstructor) {
-        return instructorRepository.findById(numInstructor).orElse(null);
-    }
-
-    @Override
-    public Instructor addInstructorAndAssignToCourse(Instructor instructor, Long numCourse) {
-        Course course = courseRepository.findById(numCourse).orElse(null);
-        Set<Course> courseSet = new HashSet<>();
-        courseSet.add(course);
-        instructor.setCourses(courseSet);
-        return instructorRepository.save(instructor);
-    }
-
 
 }
