@@ -3,13 +3,13 @@ pipeline {
     stages {
         stage('Clean and compile') {
             steps {
-                sh "env"
+                sh 'env'
                 echo 'Running Maven clean...'
-                sh "mvn clean"
+                sh 'mvn clean'
                 echo 'Compiling project...'
-                sh "mvn compile"
+                sh 'mvn compile'
                 echo 'Packaging project...'
-                sh "mvn package"
+                sh 'mvn package'
             }
         }
 
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('SonarQube') {
             steps {
-                sh "mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=123456789"
+                sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=123456789'
             }
         }
 
