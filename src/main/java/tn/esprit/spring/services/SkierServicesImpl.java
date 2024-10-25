@@ -5,26 +5,22 @@ import org.springframework.stereotype.Service;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Service
 public class SkierServicesImpl implements ISkierServices {
 
+    // Constante pour éviter la duplication de "Skier not found"
+    private static final String SKIER_NOT_FOUND = "Skier not found";
+
     private ISkierRepository skierRepository;
-
     private IPisteRepository pisteRepository;
-
     private ICourseRepository courseRepository;
-
     private IRegistrationRepository registrationRepository;
-
     private ISubscriptionRepository subscriptionRepository;
-
 
     @Override
     public List<Skier> retrieveAllSkiers() {
@@ -49,23 +45,12 @@ public class SkierServicesImpl implements ISkierServices {
 
     @Override
     public Skier assignSkierToSubscription(Long numSkier, Long numSubscription) {
-        Skier skier = skierRepository.findById(numSkier).orElse(null);
-        Subscription subscription = subscriptionRepository.findById(numSubscription).orElse(null);
+        Skier skier = skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        Subscription subscription = subscriptionRepository.findById(numSubscription).orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
 
-        // Vérifiez que le skieur et l'abonnement ne sont pas null
-        if (skier == null) {
-            throw new IllegalArgumentException("Skier not found with id: " + numSkier);
-        }
-        if (subscription == null) {
-            throw new IllegalArgumentException("Subscription not found with id: " + numSubscription);
-        }
-
-        // Assignez l'abonnement au skieur
         skier.setSubscription(subscription);
-
         return skierRepository.save(skier);
     }
-
 
     @Override
     public Skier addSkierAndAssignToCourse(Skier skier, Long numCourse) {
@@ -87,23 +72,14 @@ public class SkierServicesImpl implements ISkierServices {
 
     @Override
     public Skier retrieveSkier(Long numSkier) {
-        return skierRepository.findById(numSkier).orElse(null);
+        return skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
     }
 
     @Override
     public Skier assignSkierToPiste(Long numSkieur, Long numPiste) {
-        Skier skier = skierRepository.findById(numSkieur).orElse(null);
-        Piste piste = pisteRepository.findById(numPiste).orElse(null);
+        Skier skier = skierRepository.findById(numSkieur).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        Piste piste = pisteRepository.findById(numPiste).orElseThrow(() -> new IllegalArgumentException("Piste not found"));
 
-        // Vérifiez que le skieur et la piste ne sont pas null
-        if (skier == null) {
-            throw new IllegalArgumentException("Skier not found with id: " + numSkieur);
-        }
-        if (piste == null) {
-            throw new IllegalArgumentException("Piste not found with id: " + numPiste);
-        }
-
-        // Ajoutez la piste à l'ensemble de pistes du skieur
         Set<Piste> pisteList = skier.getPistes();
         if (pisteList == null) {
             pisteList = new HashSet<>();
@@ -114,21 +90,83 @@ public class SkierServicesImpl implements ISkierServices {
         return skierRepository.save(skier);
     }
 
-
     @Override
     public List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription) {
         return skierRepository.findBySubscription_TypeSub(typeSubscription);
     }
 
-    /*---------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------*/
 
 
+    @Override
+    public Map<String, Object> analyzeSkierEngagement() {
+        List<Skier> skiers = skierRepository.findAll();
+        Map<String, Object> statistics = new HashMap<>();
 
+        double averageCoursesPerSkier = skiers.stream()
+                .mapToInt(skier -> skier.getRegistrations().size())
+                .average()
+                .orElse(0.0);
 
+        Skier mostActiveSkier = skiers.stream()
+                .max(Comparator.comparingInt(skier -> skier.getRegistrations().size()))
+                .orElse(null);
 
+        statistics.put("averageCoursesPerSkier", averageCoursesPerSkier);
+        statistics.put("mostActiveSkier", mostActiveSkier);
 
+        return statistics;
+    }
 
+    @Override
+    public List<Skier> findSkiersWithMultipleSupports() {
+        List<Skier> skiers = skierRepository.findAll();
 
+        return skiers.stream()
+                .filter(skier -> {
+                    Set<Support> supports = skier.getRegistrations().stream()
+                            .map(registration -> registration.getCourse().getSupport())
+                            .collect(Collectors.toSet());
+                    return supports.size() > 1;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Skier> findSkiersByAgeRange(int minAge, int maxAge) {
+        LocalDate currentDate = LocalDate.now();
+
+        return skierRepository.findAll().stream()
+                .filter(skier -> {
+                    int age = currentDate.getYear() - skier.getDateOfBirth().getYear();
+                    return age >= minAge && age <= maxAge;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Skier findMostActiveSkier() {
+        return skierRepository.findAll().stream()
+                .max(Comparator.comparingInt(skier -> skier.getRegistrations().size()))
+                .orElse(null);
+    }
+
+    @Override
+    public int calculateTotalCourseDurationForSkier(Long numSkier) {
+        Skier skier = skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+
+        return skier.getRegistrations().stream()
+                .mapToInt(reg -> reg.getCourse().getTimeSlot())
+                .sum();
+    }
+
+    @Override
+    public long calculateTotalSkiersWithAnnualSubscription() {
+        return skierRepository.findAll().stream()
+                .filter(skier -> skier.getSubscription().getTypeSub() == TypeSubscription.ANNUAL)
+                .count();
+    }
 
 
 }

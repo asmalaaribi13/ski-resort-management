@@ -1,10 +1,8 @@
 package tn.esprit.spring.services;
 
-import tn.esprit.spring.entities.Color;
-import tn.esprit.spring.entities.Skier;
-import tn.esprit.spring.entities.TypeSubscription;
+import tn.esprit.spring.entities.*;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +16,34 @@ public interface ISkierServices {
 	Skier retrieveSkier (Long numSkier);
 	Skier assignSkierToPiste(Long numSkieur, Long numPiste);
 	List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription);
+
+	/*-----------------------------------------------------------------------------------------------*/
+
+	Skier findMostActiveSkier();
+
+	int calculateTotalCourseDurationForSkier(Long numSkier);
+
+	long calculateTotalSkiersWithAnnualSubscription();
+
+	Map<String, Object> analyzeSkierEngagement();
+
+
+	List<Skier> findSkiersWithMultipleSupports();
+
+	List<Skier> findSkiersByAgeRange(int minAge, int maxAge);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
