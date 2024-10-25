@@ -227,6 +227,36 @@ class SkierServicesImplTest {
     }
 
     @Test
+    void findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange() {
+        System.out.println("Starting test: findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange");
+
+        // Arrange
+        Skier skier1 = new Skier();
+        skier1.setDateOfBirth(LocalDate.of(1990, 1, 1)); // Age 34 (if current year is 2024)
+
+        Skier skier2 = new Skier();
+        skier2.setDateOfBirth(LocalDate.of(2005, 1, 1)); // Age 19
+
+        Skier skier3 = new Skier();
+        skier3.setDateOfBirth(LocalDate.of(2010, 1, 1)); // Age 14
+
+        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // Act
+        List<Skier> result = skierServices.findSkiersByAgeRange(18, 35);
+
+        // Assert
+        assertEquals(2, result.size()); // Should return skier1 and skier2 (ages 34 and 19)
+        assertTrue(result.contains(skier1));
+        assertTrue(result.contains(skier2));
+        assertFalse(result.contains(skier3)); // skier3 should be excluded (age 14)
+
+        System.out.println("Test passed: findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange\n");
+    }
+
+
+    @Test
     void calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount() {
         System.out.println("Starting test: calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount");
 
@@ -253,6 +283,57 @@ class SkierServicesImplTest {
         System.out.println("Total Skiers with Annual Subscription: " + count);
         System.out.println("Test passed: calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount\n");
     }
+
+    @Test
+    void findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport() {
+        System.out.println("Starting test: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport");
+
+        // Arrange
+        Skier skier1 = new Skier(); // Skier with multiple supports
+        Skier skier2 = new Skier(); // Skier with one support only
+
+        // Create courses with different supports
+        Course course1 = new Course();
+        course1.setSupport(Support.SKI); // SKI support
+        Course course2 = new Course();
+        course2.setSupport(Support.SNOWBOARD); // SNOWBOARD support
+
+        Course course3 = new Course();
+        course3.setSupport(Support.SKI); // SKI support for skier2 (only one support type)
+
+        // Create registrations for skier1 (multiple supports)
+        Registration registration1 = new Registration();
+        registration1.setCourse(course1); // SKI course
+        Registration registration2 = new Registration();
+        registration2.setCourse(course2); // SNOWBOARD course
+
+        Set<Registration> skier1Registrations = new HashSet<>();
+        skier1Registrations.add(registration1);
+        skier1Registrations.add(registration2);
+        skier1.setRegistrations(skier1Registrations);
+
+        // Create registrations for skier2 (only one support type)
+        Registration registration3 = new Registration();
+        registration3.setCourse(course3);
+
+        Set<Registration> skier2Registrations = new HashSet<>();
+        skier2Registrations.add(registration3);
+        skier2.setRegistrations(skier2Registrations);
+
+        List<Skier> skiers = Arrays.asList(skier1, skier2);
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // Act
+        List<Skier> result = skierServices.findSkiersWithMultipleSupports();
+
+        // Assert
+        assertEquals(1, result.size()); // Only skier1 has multiple supports
+        assertTrue(result.contains(skier1));
+        assertFalse(result.contains(skier2)); // skier2 should be excluded
+
+        System.out.println("Test passed: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport\n");
+    }
+
 
     @Test
     void analyzeSkierEngagement_ShouldReturnEngagementStatistics() {
