@@ -95,9 +95,7 @@ public class SkierServicesImpl implements ISkierServices {
         return skierRepository.findBySubscription_TypeSub(typeSubscription);
     }
 
-
     /*-------------------------------------------------------------------------------------------*/
-
 
     @Override
     public Map<String, Object> analyzeSkierEngagement() {
@@ -159,13 +157,6 @@ public class SkierServicesImpl implements ISkierServices {
         return skier.getRegistrations().stream()
                 .mapToInt(reg -> reg.getCourse().getTimeSlot())
                 .sum();
-    }
-
-    @Override
-    public long calculateTotalSkiersWithAnnualSubscription() {
-        return skierRepository.findAll().stream()
-                .filter(skier -> skier.getSubscription().getTypeSub() == TypeSubscription.ANNUAL)
-                .count();
     }
 
 

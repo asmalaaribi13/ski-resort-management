@@ -1,10 +1,13 @@
 package tn.esprit.spring;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.Arrays; // Make sure to import Arrays
+
 
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.*;
@@ -36,10 +39,32 @@ class SkierServicesImplTest {
     @Mock
     private ISubscriptionRepository subscriptionRepository;
 
+    private Skier skier;
+    private Subscription currentSubscription;
+    private Subscription newSubscription;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         System.out.println("Mock setup completed.");
+
+        // Initialize skier and subscriptions
+        skier = new Skier();
+
+        // Initialize the current subscription
+        currentSubscription = new Subscription();
+        currentSubscription.setTypeSub(TypeSubscription.MONTHLY);
+        currentSubscription.setStartDate(LocalDate.now());
+        currentSubscription.setEndDate(LocalDate.now().plusMonths(1));
+
+        // Initialize the new subscription
+        newSubscription = new Subscription();
+        newSubscription.setTypeSub(TypeSubscription.ANNUAL);
+        newSubscription.setStartDate(LocalDate.now());
+        newSubscription.setEndDate(LocalDate.now().plusYears(1));
+
+        skier.setSubscription(currentSubscription);
+        skier.setRegistrations(new HashSet<>());
     }
 
     @Test
@@ -69,7 +94,6 @@ class SkierServicesImplTest {
         System.out.println("Starting test: addSkier_ShouldSaveSkierAndSetEndDate");
 
         // Arrange
-        Skier skier = new Skier();
         Subscription subscription = new Subscription();
         subscription.setTypeSub(TypeSubscription.ANNUAL);
         subscription.setStartDate(LocalDate.now());
@@ -97,7 +121,6 @@ class SkierServicesImplTest {
         // Arrange
         Long skierId = 1L;
         Long subscriptionId = 2L;
-        Skier skier = new Skier();
         Subscription subscription = new Subscription();
 
         when(skierRepository.findById(skierId)).thenReturn(Optional.of(skier));
@@ -159,7 +182,6 @@ class SkierServicesImplTest {
 
         // Arrange
         Long skierId = 1L;
-        Skier skier = new Skier();
 
         // Create courses
         Course course1 = new Course();
@@ -193,9 +215,9 @@ class SkierServicesImplTest {
         System.out.println("Total Duration: " + totalDuration);
         System.out.println("Test passed: calculateTotalCourseDurationForSkier_ShouldReturnTotalDuration\n");
     }
-
-
+    
     @Test
+    @DisplayName("Find the most active skier")
     void findMostActiveSkier_ShouldReturnMostActiveSkier() {
         System.out.println("Starting test: findMostActiveSkier_ShouldReturnMostActiveSkier");
 
@@ -255,35 +277,6 @@ class SkierServicesImplTest {
         System.out.println("Test passed: findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange\n");
     }
 
-
-    @Test
-    void calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount() {
-        System.out.println("Starting test: calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount");
-
-        // Arrange
-        Skier skier1 = new Skier();
-        Subscription subscription1 = new Subscription();
-        subscription1.setTypeSub(TypeSubscription.ANNUAL);
-        skier1.setSubscription(subscription1);
-
-        Skier skier2 = new Skier();
-        Subscription subscription2 = new Subscription();
-        subscription2.setTypeSub(TypeSubscription.MONTHLY);
-        skier2.setSubscription(subscription2);
-
-        List<Skier> skiers = Arrays.asList(skier1, skier2);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // Act
-        long count = skierServices.calculateTotalSkiersWithAnnualSubscription();
-
-        // Assert
-        assertEquals(1, count);
-
-        System.out.println("Total Skiers with Annual Subscription: " + count);
-        System.out.println("Test passed: calculateTotalSkiersWithAnnualSubscription_ShouldReturnCount\n");
-    }
-
     @Test
     void findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport() {
         System.out.println("Starting test: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport");
@@ -334,7 +327,6 @@ class SkierServicesImplTest {
         System.out.println("Test passed: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport\n");
     }
 
-
     @Test
     void analyzeSkierEngagement_ShouldReturnEngagementStatistics() {
         System.out.println("Starting test: analyzeSkierEngagement_ShouldReturnEngagementStatistics");
@@ -360,4 +352,16 @@ class SkierServicesImplTest {
         System.out.println("Engagement Statistics: " + statistics);
         System.out.println("Test passed: analyzeSkierEngagement_ShouldReturnEngagementStatistics\n");
     }
+
+
+
+
+
+
+
+
+
+
+
+
 }

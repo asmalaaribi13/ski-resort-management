@@ -2,7 +2,6 @@ package tn.esprit.spring.services;
 
 import tn.esprit.spring.entities.*;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ public interface ISkierServices {
 
 	int calculateTotalCourseDurationForSkier(Long numSkier);
 
-	long calculateTotalSkiersWithAnnualSubscription();
 
 	Map<String, Object> analyzeSkierEngagement();
 
@@ -31,21 +29,4 @@ public interface ISkierServices {
 	List<Skier> findSkiersWithMultipleSupports();
 
 	List<Skier> findSkiersByAgeRange(int minAge, int maxAge);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

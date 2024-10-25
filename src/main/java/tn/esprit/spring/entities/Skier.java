@@ -42,5 +42,5 @@ public class Skier implements Serializable {
 	private Set<Piste> pistes;
 
 	@OneToMany(mappedBy = "skier")
-	private Set<Registration> registrations; //j'ai ajouté private **
+	Set<Registration> registrations;
 }

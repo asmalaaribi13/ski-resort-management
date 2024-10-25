@@ -1,9 +1,6 @@
-FROM openjdk:17-jdk
+FROM openjdk:11-jre-slim
+ARG JAR_FILE=target/*.jar
 
-EXPOSE 8081
-
-WORKDIR /app
-
-COPY target/gestion-station-ski-1.0.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY ${JAR_FILE} gestion-station-ski-1.0.jar
+ENTRYPOINT ["java", "-jar" ,"/gestion-station-ski-1.0.jar"]
+EXPOSE 8089
