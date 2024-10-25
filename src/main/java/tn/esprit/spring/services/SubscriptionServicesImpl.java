@@ -2,9 +2,7 @@ package tn.esprit.spring.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import tn.esprit.spring.entities.Skier;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.repositories.ISkierRepository;
@@ -54,9 +52,41 @@ public class SubscriptionServicesImpl implements ISubscriptionServices{
         return subscriptionRepository.findByTypeSubOrderByStartDateAsc(type);
     }
 
+
     @Override
     public List<Subscription> retrieveSubscriptionsByDates(LocalDate startDate, LocalDate endDate) {
         return subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
+    }
+
+    @Override
+    public void deleteSubscription(Long numSubscription) {
+        subscriptionRepository.deleteById(numSubscription);
+    }
+
+    @Override
+    public List<Subscription> getAllSubscriptions() {
+        return (List<Subscription>) subscriptionRepository.findAll();
+    }
+
+    public Float calculateTotalRevenue(LocalDate startDate, LocalDate endDate) {
+        List<Subscription> subscriptions = subscriptionRepository.getSubscriptionsByStartDateBetween(startDate, endDate);
+        return subscriptions.stream().map(Subscription::getPrice).reduce(0f, Float::sum);
+    }
+
+
+    public List<Subscription> findSubscriptionsExpiringSoon() {
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysLater = today.plusDays(7);
+        return subscriptionRepository.getSubscriptionsByStartDateBetween(today, sevenDaysLater);
+    }
+
+
+    public Float calculateAverageSubscriptionDuration() {
+        List<Subscription> subscriptions = (List<Subscription>) subscriptionRepository.findAll();
+        return (float) subscriptions.stream()
+                .mapToLong(sub -> sub.getEndDate().toEpochDay() - sub.getStartDate().toEpochDay())
+                .average()
+                .orElse(0.0);
     }
 
 }

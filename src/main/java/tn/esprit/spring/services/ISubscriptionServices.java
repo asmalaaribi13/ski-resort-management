@@ -19,5 +19,15 @@ public interface ISubscriptionServices {
 
 	List<Subscription> retrieveSubscriptionsByDates(LocalDate startDate, LocalDate endDate);
 
+	public void deleteSubscription(Long numSubscription);
+
+	public List<Subscription> getAllSubscriptions();
+
+	public Float calculateTotalRevenue(LocalDate startDate, LocalDate endDate);
+
+	public List<Subscription> findSubscriptionsExpiringSoon();
+
+	public Float calculateAverageSubscriptionDuration();
+
 
 }

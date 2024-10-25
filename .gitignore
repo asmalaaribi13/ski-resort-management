@@ -8,7 +8,6 @@ mvnw.cmd
 target/
 *.log
 *.class
-*.jar
 *.war
 *.iml
 
