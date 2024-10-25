@@ -215,7 +215,7 @@ class SkierServicesImplTest {
         System.out.println("Total Duration: " + totalDuration);
         System.out.println("Test passed: calculateTotalCourseDurationForSkier_ShouldReturnTotalDuration\n");
     }
-    
+
     @Test
     @DisplayName("Find the most active skier")
     void findMostActiveSkier_ShouldReturnMostActiveSkier() {
