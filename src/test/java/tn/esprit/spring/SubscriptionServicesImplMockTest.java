@@ -10,8 +10,7 @@ import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.repositories.ISkierRepository;
 import tn.esprit.spring.repositories.ISubscriptionRepository;
 import tn.esprit.spring.services.SubscriptionServicesImpl;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+
 
 
 
@@ -21,7 +20,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@Execution(ExecutionMode.CONCURRENT)
+
   class SubscriptionServicesImplMockTest {
 
     @Mock
