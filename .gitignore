@@ -4,15 +4,12 @@
 mvnw
 mvnw.cmd
 
-# Ignore common build artifacts
+# Ignore other common files (optional but recommended)
 target/
 *.log
 *.class
 *.war
 *.iml
-*.bak
-*.swp
-*.tmp
 
 # Existing rules
 HELP.md
