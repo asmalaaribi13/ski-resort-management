@@ -11,11 +11,14 @@ import tn.esprit.spring.services.SubscriptionServicesImpl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Execution(ExecutionMode.CONCURRENT)
  class SubscriptionServicesImplTest {
 
     @Autowired
