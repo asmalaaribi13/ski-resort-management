@@ -5,7 +5,6 @@ mvnw
 mvnw.cmd
 
 # Ignore other common files (optional but recommended)
-target/
 *.log
 *.class
 *.war
@@ -14,6 +13,7 @@ target/
 # Existing rules
 HELP.md
 target/
+!target/jacoco.exec
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
