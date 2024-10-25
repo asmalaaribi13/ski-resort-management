@@ -106,12 +106,12 @@ public class PisteServicesImpl implements  IPisteServices{
 
         // Loop over skiers and filter them based on the number of registrations
         for (Skier skier : skiers) {
-            // Ensure registrations and pistes are not null
-            if (skier.getRegistrations() != null && skier.getRegistrations().size() >= minCourses) {
-                if (skier.getPistes() != null) {
-                    popularPistes.addAll(skier.getPistes());
-                }
+            // Ensure both registrations and pistes are not null and the skier has at least minCourses registrations
+            if (skier.getRegistrations() != null && skier.getRegistrations().size() >= minCourses
+                    && skier.getPistes() != null) {
+                popularPistes.addAll(skier.getPistes());
             }
+
         }
         // Convert the Set to List and return
         return new ArrayList<>(popularPistes);
