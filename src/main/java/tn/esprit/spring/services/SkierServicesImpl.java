@@ -21,6 +21,7 @@ public class SkierServicesImpl implements ISkierServices {
     private ICourseRepository courseRepository;
     private IRegistrationRepository registrationRepository;
     private ISubscriptionRepository subscriptionRepository;
+    private IInstructorRepository instructorRepository;
 
     @Override
     public List<Skier> retrieveAllSkiers() {
@@ -132,32 +133,86 @@ public class SkierServicesImpl implements ISkierServices {
     }
 
     @Override
-    public List<Skier> findSkiersByAgeRange(int minAge, int maxAge) {
-        LocalDate currentDate = LocalDate.now();
-
+    public List<Skier> findSkiersByPisteColor(Color color) {
         return skierRepository.findAll().stream()
-                .filter(skier -> {
-                    int age = currentDate.getYear() - skier.getDateOfBirth().getYear();
-                    return age >= minAge && age <= maxAge;
-                })
+                .filter(skier -> skier.getPistes().stream()
+                        .anyMatch(piste -> piste.getColor() == color))
+                .collect(Collectors.toList());
+    }
+
+    /* Get Total Spending by Skier: Calculate the total amount
+    spent by a skier, including course fees and subscription costs.*/
+    @Override
+    public Float calculateTotalSpendingBySkier(Long numSkier) {
+        Skier skier = skierRepository.findById(numSkier)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+
+        Float courseCost = skier.getRegistrations().stream()
+                .map(registration -> registration.getCourse().getPrice())
+                .reduce(0f, Float::sum);
+
+        Float subscriptionCost = skier.getSubscription() != null ? skier.getSubscription().getPrice() : 0f;
+
+        return courseCost + subscriptionCost;
+    }
+
+    @Override
+    public List<Skier> findSkiersWithHighestAverageCoursePrice(int topN) {
+        return skierRepository.findAll().stream()
+                .map(skier -> new AbstractMap.SimpleEntry<>(skier,
+                        skier.getRegistrations().stream()
+                                .mapToDouble(registration -> registration.getCourse().getPrice())
+                                .average()
+                                .orElse(0.0)))
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
+                .limit(topN)
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Skier findMostActiveSkier() {
+    public List<Skier> findSkiersActiveInMultipleCourseTypes(int minTypes) {
         return skierRepository.findAll().stream()
-                .max(Comparator.comparingInt(skier -> skier.getRegistrations().size()))
-                .orElse(null);
+                .filter(skier -> {
+                    Set<TypeCourse> courseTypes = skier.getRegistrations().stream()
+                            .map(registration -> registration.getCourse().getTypeCourse())
+                            .collect(Collectors.toSet());
+                    return courseTypes.size() >= minTypes;
+                })
+                .collect(Collectors.toList());
     }
 
+    /* Analyze Piste Usage Across Skiers by Age Group */
     @Override
-    public int calculateTotalCourseDurationForSkier(Long numSkier) {
-        Skier skier = skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+    public Map<String, Double> analyzePisteUsageByAgeGroup() {
+        LocalDate currentDate = LocalDate.now();
+        Map<String, List<Integer>> ageGroups = new HashMap<>();
+        ageGroups.put("Children (0-12)", new ArrayList<>());
+        ageGroups.put("Teens (13-19)", new ArrayList<>());
+        ageGroups.put("Adults (20-59)", new ArrayList<>());
+        ageGroups.put("Seniors (60+)", new ArrayList<>());
 
-        return skier.getRegistrations().stream()
-                .mapToInt(reg -> reg.getCourse().getTimeSlot())
-                .sum();
+        // Group skiers by age
+        skierRepository.findAll().forEach(skier -> {
+            int age = currentDate.getYear() - skier.getDateOfBirth().getYear();
+            if (age <= 12) {
+                ageGroups.get("Children (0-12)").add(skier.getPistes().size());
+            } else if (age <= 19) {
+                ageGroups.get("Teens (13-19)").add(skier.getPistes().size());
+            } else if (age <= 59) {
+                ageGroups.get("Adults (20-59)").add(skier.getPistes().size());
+            } else {
+                ageGroups.get("Seniors (60+)").add(skier.getPistes().size());
+            }
+        });
+
+        // Calculate average piste usage per age group
+        Map<String, Double> averagePisteUsage = new HashMap<>();
+        ageGroups.forEach((group, usage) -> {
+            double average = usage.stream().mapToInt(i -> i).average().orElse(0.0);
+            averagePisteUsage.put(group, average);
+        });
+
+        return averagePisteUsage;
     }
-
-
 }

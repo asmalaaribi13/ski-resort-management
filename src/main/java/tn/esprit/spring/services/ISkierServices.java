@@ -16,17 +16,25 @@ public interface ISkierServices {
 	Skier assignSkierToPiste(Long numSkieur, Long numPiste);
 	List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription);
 
-	/*-----------------------------------------------------------------------------------------------*/
-
-	Skier findMostActiveSkier();
-
-	int calculateTotalCourseDurationForSkier(Long numSkier);
-
-
 	Map<String, Object> analyzeSkierEngagement();
-
 
 	List<Skier> findSkiersWithMultipleSupports();
 
-	List<Skier> findSkiersByAgeRange(int minAge, int maxAge);
+	List<Skier> findSkiersByPisteColor(Color color);
+
+	/* Get Total Spending by Skier: Calculate the total amount
+		spent by a skier, including course fees and subscription costs.*/
+	Float calculateTotalSpendingBySkier(Long numSkier);
+
+	List<Skier> findSkiersWithHighestAverageCoursePrice(int topN);
+
+	List<Skier> findSkiersActiveInMultipleCourseTypes(int minTypes);
+
+	/* Analyze Piste Usage Across Skiers by Age Group */
+	Map<String, Double> analyzePisteUsageByAgeGroup();
+
+	/*-----------------------------------------------------------------------------------------------*/
+
+
+
 }

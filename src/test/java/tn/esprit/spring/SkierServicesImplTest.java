@@ -1,7 +1,6 @@
 package tn.esprit.spring;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -176,69 +175,6 @@ class SkierServicesImplTest {
         System.out.println("Test passed: removeSkier_ShouldDeleteSkier\n");
     }
 
-    @Test
-    void calculateTotalCourseDurationForSkier_ShouldReturnTotalDuration() {
-        System.out.println("Starting test: calculateTotalCourseDurationForSkier_ShouldReturnTotalDuration");
-
-        // Arrange
-        Long skierId = 1L;
-
-        // Create courses
-        Course course1 = new Course();
-        course1.setTimeSlot(2); // Set time slot for course 1
-        Course course2 = new Course();
-        course2.setTimeSlot(3); // Set time slot for course 2
-
-        // Create registrations using the default constructor
-        Registration registration1 = new Registration();
-        registration1.setCourse(course1);  // Use the setter to set the course
-        Registration registration2 = new Registration();
-        registration2.setCourse(course2);  // Use the setter to set the course
-
-        // Add registrations to the skier
-        Set<Registration> registrations = new HashSet<>();
-        registrations.add(registration1);
-        registrations.add(registration2);
-
-        skier.setRegistrations(registrations);  // Set the registrations for the skier
-
-        // Mock repository behavior
-        when(skierRepository.findById(skierId)).thenReturn(Optional.of(skier));
-
-        // Act
-        int totalDuration = skierServices.calculateTotalCourseDurationForSkier(skierId);
-
-        // Assert
-        assertEquals(5, totalDuration);  // Expect the total duration to be 5
-
-        // Console output for verification
-        System.out.println("Total Duration: " + totalDuration);
-        System.out.println("Test passed: calculateTotalCourseDurationForSkier_ShouldReturnTotalDuration\n");
-    }
-
-    @Test
-    @DisplayName("Find the most active skier")
-    void findMostActiveSkier_ShouldReturnMostActiveSkier() {
-        System.out.println("Starting test: findMostActiveSkier_ShouldReturnMostActiveSkier");
-
-        // Arrange
-        Skier skier1 = new Skier();
-        skier1.setRegistrations(createRegistrations(2));
-        Skier skier2 = new Skier();
-        skier2.setRegistrations(createRegistrations(3));
-        List<Skier> skiers = Arrays.asList(skier1, skier2);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // Act
-        Skier mostActiveSkier = skierServices.findMostActiveSkier();
-
-        // Assert
-        assertEquals(skier2, mostActiveSkier);
-
-        System.out.println("Most Active Skier: " + mostActiveSkier);
-        System.out.println("Test passed: findMostActiveSkier_ShouldReturnMostActiveSkier\n");
-    }
-
     // Utility method to create a Set of registrations
     private Set<Registration> createRegistrations(int count) {
         Set<Registration> registrations = new HashSet<>();
@@ -248,34 +184,7 @@ class SkierServicesImplTest {
         return registrations;
     }
 
-    @Test
-    void findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange() {
-        System.out.println("Starting test: findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange");
 
-        // Arrange
-        Skier skier1 = new Skier();
-        skier1.setDateOfBirth(LocalDate.of(1990, 1, 1)); // Age 34 (if current year is 2024)
-
-        Skier skier2 = new Skier();
-        skier2.setDateOfBirth(LocalDate.of(2005, 1, 1)); // Age 19
-
-        Skier skier3 = new Skier();
-        skier3.setDateOfBirth(LocalDate.of(2010, 1, 1)); // Age 14
-
-        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // Act
-        List<Skier> result = skierServices.findSkiersByAgeRange(18, 35);
-
-        // Assert
-        assertEquals(2, result.size()); // Should return skier1 and skier2 (ages 34 and 19)
-        assertTrue(result.contains(skier1));
-        assertTrue(result.contains(skier2));
-        assertFalse(result.contains(skier3)); // skier3 should be excluded (age 14)
-
-        System.out.println("Test passed: findSkiersByAgeRange_ShouldReturnSkiersWithinAgeRange\n");
-    }
 
     @Test
     void findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport() {
@@ -352,6 +261,185 @@ class SkierServicesImplTest {
         System.out.println("Engagement Statistics: " + statistics);
         System.out.println("Test passed: analyzeSkierEngagement_ShouldReturnEngagementStatistics\n");
     }
+
+    @Test
+    void testFindSkiersByPisteColor() {
+        // Given
+        Color targetColor = Color.GREEN;
+
+        // Create pistes
+        Piste greenPiste = new Piste();
+        greenPiste.setColor(Color.GREEN);
+
+        Piste bluePiste = new Piste();
+        bluePiste.setColor(Color.BLUE);
+
+        Piste redPiste = new Piste();
+        redPiste.setColor(Color.RED);
+
+        // Create skiers
+        Skier skier1 = new Skier();
+        skier1.setPistes(new HashSet<>(Arrays.asList(greenPiste, bluePiste)));
+
+        Skier skier2 = new Skier();
+        skier2.setPistes(new HashSet<>(Collections.singletonList(redPiste)));
+
+        List<Skier> skiers = Arrays.asList(skier1, skier2);
+
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // When
+        List<Skier> result = skierServices.findSkiersByPisteColor(targetColor);
+
+        // Then
+        assertEquals(1, result.size());
+        assertTrue(result.contains(skier1));
+        assertFalse(result.contains(skier2));
+
+        System.out.println("Test passed: testFindSkiersByPisteColor\n");
+    }
+
+    @Test
+    void testCalculateTotalSpendingBySkier() {
+        // Given
+        Long numSkier = 1L;
+
+        // Create a mock course with prices
+        Course course1 = new Course();
+        course1.setPrice(100f); // Set price for course1
+
+        Course course2 = new Course();
+        course2.setPrice(150f); // Set price for course2
+
+        // Create registrations for the skier
+        Registration registration1 = new Registration();
+        registration1.setCourse(course1);
+
+        Registration registration2 = new Registration();
+        registration2.setCourse(course2);
+
+        // Create a skier with registrations and a subscription
+        Skier testSkier = new Skier(); // Renamed to avoid hiding the field
+        testSkier.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2)));
+
+        // Create a subscription with a price
+        Subscription subscription = new Subscription();
+        subscription.setPrice(50f); // Set price for subscription
+        testSkier.setSubscription(subscription);
+
+        // Mock the repository behavior
+        when(skierRepository.findById(numSkier)).thenReturn(Optional.of(testSkier));
+
+        // When
+        Float totalSpending = skierServices.calculateTotalSpendingBySkier(numSkier);
+
+        // Then
+        Float expectedSpending = 100f + 150f + 50f; // 100 (course1) + 150 (course2) + 50 (subscription)
+        assertEquals(expectedSpending, totalSpending);
+
+        System.out.println("Test passed: testCalculateTotalSpendingBySkier\n");
+    }
+
+
+    @Test
+    void testFindSkiersWithHighestAverageCoursePrice() {
+        // Given
+        int topN = 2;
+
+        // Create Courses with different prices
+        Course course1 = new Course();
+        course1.setPrice(100f); // Price for course1
+
+        Course course2 = new Course();
+        course2.setPrice(150f); // Price for course2
+
+        Course course3 = new Course();
+        course3.setPrice(200f); // Price for course3
+
+        // Create Registrations for skiers
+        Registration registration1 = new Registration();
+        registration1.setCourse(course1);
+
+        Registration registration2 = new Registration();
+        registration2.setCourse(course2);
+
+        Registration registration3 = new Registration();
+        registration3.setCourse(course3);
+
+        // Create skiers with different registrations
+        Skier skier1 = new Skier();
+        skier1.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2))); // Average: (100 + 150) / 2 = 125
+
+        Skier skier2 = new Skier();
+        skier2.setRegistrations(new HashSet<>(Collections.singletonList(registration3))); // Average: 200
+
+        Skier skier3 = new Skier();
+        skier3.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration3))); // Average: (100 + 200) / 2 = 150
+
+        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // When
+        List<Skier> result = skierServices.findSkiersWithHighestAverageCoursePrice(topN);
+
+        // Then
+        assertEquals(topN, result.size());
+        assertEquals(skier2, result.get(0)); // skier2 has the highest average price (200)
+        assertEquals(skier3, result.get(1)); // skier3 has the second highest average price (150)
+
+        System.out.println("Test passed: testFindSkiersWithHighestAverageCoursePrice\n");
+    }
+
+    @Test
+    void analyzePisteUsageByAgeGroup_ShouldReturnAverageUsageByAgeGroup() {
+        // Given
+        LocalDate currentDate = LocalDate.now();
+
+        // Create mock skiers
+        Skier skier1 = new Skier();
+        skier1.setDateOfBirth(currentDate.minusYears(10)); // Age 10
+        skier1.setPistes(new HashSet<>(Arrays.asList(new Piste(), new Piste()))); // 2 pistes
+
+        Skier skier2 = new Skier();
+        skier2.setDateOfBirth(currentDate.minusYears(15)); // Age 15
+        skier2.setPistes(new HashSet<>(Arrays.asList(new Piste()))); // 1 piste
+
+        Skier skier3 = new Skier();
+        skier3.setDateOfBirth(currentDate.minusYears(30)); // Age 30
+        skier3.setPistes(new HashSet<>(Arrays.asList(new Piste(), new Piste(), new Piste()))); // 3 pistes
+
+        // Mock repository behavior
+        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // When
+        Map<String, Double> result = skierServices.analyzePisteUsageByAgeGroup();
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2.0, result.get("Children (0-12)")); // Expect 2 pistes from skier1
+        assertEquals(1.0, result.get("Teens (13-19)")); // Expect 1 piste from skier2
+        assertEquals(3.0, result.get("Adults (20-59)")); // Expect 3 pistes from skier3
+        assertEquals(0.0, result.get("Seniors (60+)")); // No seniors in this test
+
+        System.out.println("Average Piste Usage by Age Group: " + result);
+        System.out.println("Test passed: analyzePisteUsageByAgeGroup_ShouldReturnAverageUsageByAgeGroup\n");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
