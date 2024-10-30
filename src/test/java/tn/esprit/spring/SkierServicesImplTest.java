@@ -426,6 +426,61 @@ class SkierServicesImplTest {
         System.out.println("Test passed: analyzePisteUsageByAgeGroup_ShouldReturnAverageUsageByAgeGroup\n");
     }
 
+    @Test
+    void testFindSkiersActiveInMultipleCourseTypes() {
+        // Given
+        int minTypes = 2;
+
+        // Create mock courses with different types
+        Course course1 = new Course();
+        course1.setTypeCourse(TypeCourse.COLLECTIVE_CHILDREN); // Type 1
+
+        Course course2 = new Course();
+        course2.setTypeCourse(TypeCourse.COLLECTIVE_ADULT); // Type 2
+
+        Course course3 = new Course();
+        course3.setTypeCourse(TypeCourse.INDIVIDUAL); // Type 3
+
+        // Create registrations for skiers
+        Registration registration1 = new Registration();
+        registration1.setCourse(course1);
+
+        Registration registration2 = new Registration();
+        registration2.setCourse(course2);
+
+        Registration registration3 = new Registration();
+        registration3.setCourse(course3);
+
+        // Create skiers with registrations
+        Skier skier1 = new Skier();
+        skier1.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2))); // 2 different types
+
+        Skier skier2 = new Skier();
+        skier2.setRegistrations(new HashSet<>(Arrays.asList(registration1))); // 1 type
+
+        Skier skier3 = new Skier();
+        skier3.setRegistrations(new HashSet<>(Arrays.asList(registration2, registration3))); // 2 different types
+
+        // Mock the repository behavior
+        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
+        when(skierRepository.findAll()).thenReturn(skiers);
+
+        // When
+        List<Skier> result = skierServices.findSkiersActiveInMultipleCourseTypes(minTypes);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size()); // Expecting skier1 and skier3 to be returned
+        assertTrue(result.contains(skier1));
+        assertTrue(result.contains(skier3));
+        assertFalse(result.contains(skier2)); // Skier2 should not be in the result
+
+        System.out.println("Test passed: testFindSkiersActiveInMultipleCourseTypes\n");
+    }
+
+
+
+
 
 
 

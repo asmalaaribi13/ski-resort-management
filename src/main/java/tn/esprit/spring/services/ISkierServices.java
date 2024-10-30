@@ -16,6 +16,8 @@ public interface ISkierServices {
 	Skier assignSkierToPiste(Long numSkieur, Long numPiste);
 	List<Skier> retrieveSkiersBySubscriptionType(TypeSubscription typeSubscription);
 
+
+
 	Map<String, Object> analyzeSkierEngagement();
 
 	List<Skier> findSkiersWithMultipleSupports();
@@ -33,7 +35,6 @@ public interface ISkierServices {
 	/* Analyze Piste Usage Across Skiers by Age Group */
 	Map<String, Double> analyzePisteUsageByAgeGroup();
 
-	/*-----------------------------------------------------------------------------------------------*/
 
 
 
