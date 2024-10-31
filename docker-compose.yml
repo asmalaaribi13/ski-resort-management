@@ -14,7 +14,7 @@ services:
 
   app-gestionstationski:
     depends_on:
-      - mysqldb  # Assure que mysqldb est démarré avant app-timesheet
+      - mysqldb
     image: asmalaaribi/gestion-station-ski:1.0.0
     restart: on-failure
     ports:
