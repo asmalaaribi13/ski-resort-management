@@ -16,7 +16,7 @@ services:
   mysqldb:
     image: mysql:8
     volumes:
-      -  /home/mysql/cyrinedata:/var/lib/mysql:rw
+      -  /home/mysql/cyridata:/var/lib/mysql:rw
     networks:
       - station
     environment:
