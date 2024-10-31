@@ -5,6 +5,7 @@ mvnw
 mvnw.cmd
 
 # Ignore other common files (optional but recommended)
+target/
 *.log
 *.class
 *.war
@@ -13,13 +14,9 @@ mvnw.cmd
 # Existing rules
 HELP.md
 target/
-!target/jacoco.exec
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
-### Ignore Dockerfile ###
-Dockerfile
 
 ### STS ###
 .apt_generated

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.spring.dto.SubscriptionDTO;
 import tn.esprit.spring.entities.Subscription;
 import tn.esprit.spring.entities.TypeSubscription;
 import tn.esprit.spring.services.ISubscriptionServices;
@@ -23,11 +22,8 @@ public class SubscriptionRestController {
 
     @Operation(description = "Add Subscription ")
     @PostMapping("/add")
-    public Subscription addSubscription(@RequestBody SubscriptionDTO subscriptionDTO){
-        // Map DTO to entity
-        Subscription subscription = new Subscription();
-        subscription.setTypeSub(TypeSubscription.valueOf(subscriptionDTO.getType()));
-        return subscriptionServices.addSubscription(subscription);
+    public Subscription addSubscription(@RequestBody Subscription subscription){
+        return  subscriptionServices.addSubscription(subscription);
     }
     @Operation(description = "Retrieve Subscription by Id")
     @GetMapping("/get/{id-subscription}")
@@ -41,11 +37,9 @@ public class SubscriptionRestController {
         return subscriptionServices.getSubscriptionByType(typeSubscription);
     }
     @Operation(description = "Update Subscription ")
-    public Subscription updateSubscription(@RequestBody SubscriptionDTO subscriptionDTO){
-        // Map DTO to entity
-        Subscription subscription = new Subscription();
-        subscription.setTypeSub(TypeSubscription.valueOf(subscriptionDTO.getType()));
-        return subscriptionServices.updateSubscription(subscription);
+    @PutMapping("/update")
+    public Subscription updateSubscription(@RequestBody Subscription subscription){
+        return  subscriptionServices.updateSubscription(subscription);
     }
     @Operation(description = "Retrieve Subscriptions created between two dates")
     @GetMapping("/all/{date1}/{date2}")
