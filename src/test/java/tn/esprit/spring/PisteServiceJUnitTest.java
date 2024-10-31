@@ -29,22 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
-
-
  class PisteServiceJUnitTest {
-
     @Autowired
     private PisteServicesImpl pisteService;
-
     @Autowired
     private IPisteRepository pisteRepository;
-
     @Autowired
     private ISkierRepository skierRepository;
-
     private static Long savedPisteId;
-
 
     @BeforeEach
     @Order(1)
