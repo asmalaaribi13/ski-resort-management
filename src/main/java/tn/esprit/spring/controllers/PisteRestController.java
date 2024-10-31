@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/piste")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://192.168.50.4")
 public class PisteRestController {
 
     private final IPisteServices pisteServices;
