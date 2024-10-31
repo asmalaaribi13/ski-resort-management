@@ -18,6 +18,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Ignore Dockerfile ###
+Dockerfile
+
 ### STS ###
 .apt_generated
 .classpath
