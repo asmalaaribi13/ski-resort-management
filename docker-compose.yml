@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+
+  mysqldb:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=skidb
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+
+  gestion-spring-ski:
+    depends_on:
+      - mysqldb
+    image: samehouertani33/skier
+    restart: on-failure
+    ports:
+      - 8081:8081
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring_datasource_url": jdbc:mysql://localhost:3306/skidb?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+        "spring_datasource_username": "root"
+        "spring.datasource.password": null,
+        "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.MySQL8Dialect",
+        "sping.jpa.hibernate.ddl.auto" : "update"
+      }'
+      stdin_open: true
+      tty: true
+
+      volumes:
+      db:
+
+
+
