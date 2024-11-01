@@ -22,16 +22,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=stationSki
-  front-ski:
-    image: cyrine382/cyrinegharbi-5bi3-g5-gestionstationski-front
-    ports:
-      - "80:80"
-    networks:
-      - station
-    depends_on:
-      - spring-ski
-      - mysqldb
-
 
 networks:
   station:
