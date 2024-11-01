@@ -19,7 +19,7 @@
 		<java.version>17</java.version> <!-- Update to Java 17 -->
 		<maven.compiler.source>17</maven.compiler.source> <!-- Specify source version -->
 		<maven.compiler.target>17</maven.compiler.target> <!-- Specify target version -->
-		<maven-jar-plugin.version>4.0.0-beta-1</maven-jar-plugin.version>
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 	</properties>
 
 	<dependencies>
