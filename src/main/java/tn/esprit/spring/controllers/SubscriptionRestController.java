@@ -54,4 +54,30 @@ public class SubscriptionRestController {
         return subscriptionServices.retrieveSubscriptionsByDates(startDate, endDate);
     }
 
+    @Operation(description = "Delete Subscription by Id")
+    @DeleteMapping("/delete/{id-subscription}")
+    public void deleteSubscription(@PathVariable("id-subscription") Long numSubscription){
+        subscriptionServices.deleteSubscription(numSubscription);
+    }
+
+    @Operation(description = "Calculate Total Revenue between two dates")
+    @GetMapping("/revenue/{startDate}/{endDate}")
+    public Float calculateTotalRevenue(@PathVariable("startDate") LocalDate startDate,
+                                       @PathVariable("endDate") LocalDate endDate) {
+        return subscriptionServices.calculateTotalRevenue(startDate, endDate);
+    }
+
+    @Operation(description = "Find Subscriptions Expiring Soon")
+    @GetMapping("/expiring-soon")
+    public List<Subscription> findSubscriptionsExpiringSoon() {
+        return subscriptionServices.findSubscriptionsExpiringSoon();
+    }
+
+    @Operation(description = "Calculate Average Subscription Duration")
+    @GetMapping("/average-duration")
+    public Float calculateAverageSubscriptionDuration() {
+        return subscriptionServices.calculateAverageSubscriptionDuration();
+    }
 }
+
+
