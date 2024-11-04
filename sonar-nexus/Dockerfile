@@ -1,8 +1,7 @@
-FROM openjdk:17-jdk 
-WORKDIR /app
-COPY target/gestion-station-ski-1.0.jar app.jar
-EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ FROM openjdk:17-jdk-alpine
+ EXPOSE 8082
+ ADD target/timesheet-devops-1.0.jar timesheet-devops-1.0.jar
+ ENTRYPOINT ["java","-jar","/timesheet-devops-1.0.jar"]
 
 
 
