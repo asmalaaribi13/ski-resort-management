@@ -1,7 +1,7 @@
  FROM openjdk:17-jdk-alpine
  EXPOSE 8082
- ADD target/timesheet-devops-1.0.jar timesheet-devops-1.0.jar
- ENTRYPOINT ["java","-jar","/timesheet-devops-1.0.jar"]
+ ADD target/gestion-station-ski-1.8.jar app.jar
+ ENTRYPOINT ["java","-jar","/gestion-station-ski-1.8.jar"]
 
 
 
