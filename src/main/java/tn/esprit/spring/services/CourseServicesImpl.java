@@ -7,11 +7,18 @@ import tn.esprit.spring.entities.TypeCourse;
 import tn.esprit.spring.repositories.ICourseRepository;
 
 import java.util.List;
+
 @AllArgsConstructor
 @Service
-public class CourseServicesImpl implements  ICourseServices{
+public class CourseServicesImpl implements ICourseServices {
 
-    private ICourseRepository courseRepository;
+    private final ICourseRepository courseRepository;
+
+    // Constructor and methods...
+    @Override
+    public List<Course> findCoursesByType(TypeCourse typeCourse) {
+        return courseRepository.findByTypeCourse(typeCourse);
+    }
 
     @Override
     public List<Course> retrieveAllCourses() {
@@ -32,11 +39,4 @@ public class CourseServicesImpl implements  ICourseServices{
     public Course retrieveCourse(Long numCourse) {
         return courseRepository.findById(numCourse).orElse(null);
     }
-
-    @Override
-    public List<Course> findCoursesByType(TypeCourse typeCourse) {
-        return courseRepository.findByTypeCourse(typeCourse);
-    }
-
-
 }
