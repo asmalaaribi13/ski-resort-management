@@ -1,10 +1,5 @@
-FROM openjdk:17-jdk
-
-WORKDIR /app
-
-COPY sonar-nexus/target/gestion-station-ski-1.8.jar app.jar
-
-EXPOSE 8089 
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+FROM openjdk:17-jdk-alpine
+EXPOSE 8089
+ADD target/gestion-station-ski-1.8.jar gestion-station-ski-1.8.jar
+ENTRYPOINT ["java","-jar","/gestion-station-ski-1.8.jar"]
 
