@@ -74,6 +74,23 @@
 	<build>
 		<plugins>
 			<plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version> <!-- Or use the latest version -->
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal> <!-- Instrument your code for coverage -->
+                    </goals>
+                </execution>
+                <execution>
+                    <goals>
+                        <goal>report</goal> <!-- Generate the code coverage report -->
+                    </goals>
+                    <phase>verify</phase> <!-- Ensure report is generated at the correct phase -->
+                </execution>
+            </executions>
+		
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
