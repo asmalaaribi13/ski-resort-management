@@ -96,93 +96,8 @@ public class SkierServicesImpl implements ISkierServices {
         return skierRepository.findBySubscription_TypeSub(typeSubscription);
     }
 
-    /*-------------------------------------------------------------------------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
 
-    @Override
-    public Map<String, Object> analyzeSkierEngagement() {
-        List<Skier> skiers = skierRepository.findAll();
-        Map<String, Object> statistics = new HashMap<>();
-
-        double averageCoursesPerSkier = skiers.stream()
-                .mapToInt(skier -> skier.getRegistrations().size())
-                .average()
-                .orElse(0.0);
-
-        Skier mostActiveSkier = skiers.stream()
-                .max(Comparator.comparingInt(skier -> skier.getRegistrations().size()))
-                .orElse(null);
-
-        statistics.put("averageCoursesPerSkier", averageCoursesPerSkier);
-        statistics.put("mostActiveSkier", mostActiveSkier);
-
-        return statistics;
-    }
-
-    @Override
-    public List<Skier> findSkiersWithMultipleSupports() {
-        List<Skier> skiers = skierRepository.findAll();
-
-        return skiers.stream()
-                .filter(skier -> {
-                    Set<Support> supports = skier.getRegistrations().stream()
-                            .map(registration -> registration.getCourse().getSupport())
-                            .collect(Collectors.toSet());
-                    return supports.size() > 1;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Skier> findSkiersByPisteColor(Color color) {
-        return skierRepository.findAll().stream()
-                .filter(skier -> skier.getPistes().stream()
-                        .anyMatch(piste -> piste.getColor() == color))
-                .collect(Collectors.toList());
-    }
-
-    /* Get Total Spending by Skier: Calculate the total amount
-    spent by a skier, including course fees and subscription costs.*/
-    @Override
-    public Float calculateTotalSpendingBySkier(Long numSkier) {
-        Skier skier = skierRepository.findById(numSkier)
-                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
-
-        Float courseCost = skier.getRegistrations().stream()
-                .map(registration -> registration.getCourse().getPrice())
-                .reduce(0f, Float::sum);
-
-        Float subscriptionCost = skier.getSubscription() != null ? skier.getSubscription().getPrice() : 0f;
-
-        return courseCost + subscriptionCost;
-    }
-
-    @Override
-    public List<Skier> findSkiersWithHighestAverageCoursePrice(int topN) {
-        return skierRepository.findAll().stream()
-                .map(skier -> new AbstractMap.SimpleEntry<>(skier,
-                        skier.getRegistrations().stream()
-                                .mapToDouble(registration -> registration.getCourse().getPrice())
-                                .average()
-                                .orElse(0.0)))
-                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
-                .limit(topN)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Skier> findSkiersActiveInMultipleCourseTypes(int minTypes) {
-        return skierRepository.findAll().stream()
-                .filter(skier -> {
-                    Set<TypeCourse> courseTypes = skier.getRegistrations().stream()
-                            .map(registration -> registration.getCourse().getTypeCourse())
-                            .collect(Collectors.toSet());
-                    return courseTypes.size() >= minTypes;
-                })
-                .collect(Collectors.toList());
-    }
-
-    /* Analyze Piste Usage Across Skiers by Age Group */
     @Override
     public Map<String, Double> analyzePisteUsageByAgeGroup() {
         LocalDate currentDate = LocalDate.now();
@@ -215,4 +130,102 @@ public class SkierServicesImpl implements ISkierServices {
 
         return averagePisteUsage;
     }
+
+    @Override
+    public Map<String, Object> analyzeSkierEngagement() {
+        List<Skier> skiers = skierRepository.findAll();
+        Map<String, Object> statistics = new HashMap<>();
+
+        double averageCoursesPerSkier = skiers.stream()
+                .mapToInt(skier -> skier.getRegistrations().size())
+                .average()
+                .orElse(0.0);
+
+        Skier mostActiveSkier = skiers.stream()
+                .max(Comparator.comparingInt(skier -> skier.getRegistrations().size()))
+                .orElse(null);
+
+        statistics.put("averageCoursesPerSkier", averageCoursesPerSkier);
+        statistics.put("mostActiveSkier", mostActiveSkier);
+
+        return statistics;
+    }
+
+    @Override
+    public List<Skier> findTopSpendingSkiers(int topN) {
+        return skierRepository.findAll().stream()
+                .sorted((skier1, skier2) -> {
+                    Float totalSpend1 = calculateTotalSpendingBySkier(skier1.getNumSkier());
+                    Float totalSpend2 = calculateTotalSpendingBySkier(skier2.getNumSkier());
+                    return totalSpend2.compareTo(totalSpend1); // Tri en ordre décroissant
+                })
+                .limit(topN)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<TypeSubscription, Double> getAverageAgeBySubscriptionType() {
+        LocalDate today = LocalDate.now();
+        return Arrays.stream(TypeSubscription.values())
+                .collect(Collectors.toMap(
+                        type -> type,
+                        type -> skierRepository.findBySubscription_TypeSub(type).stream()
+                                .mapToInt(skier -> today.getYear() - skier.getDateOfBirth().getYear())
+                                .average().orElse(0.0)
+                ));
+    }
+
+    @Override
+    public Float calculateTotalSpendingBySkier(Long numSkier) {
+        Skier skier = skierRepository.findById(numSkier)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+
+        Float courseCost = skier.getRegistrations().stream()
+                .map(registration -> registration.getCourse().getPrice())
+                .reduce(0f, Float::sum);
+
+        Float subscriptionCost = skier.getSubscription() != null ? skier.getSubscription().getPrice() : 0f;
+
+        return courseCost + subscriptionCost;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
