@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app-gestionstationski:
-    image: cheimadouiss/timesheet-devops:1.0.0
+    image: cheimadouiss/gestion-station-ski:1.0.0
     restart: on-failure
     ports:
       - 8089:8089
