@@ -16,8 +16,7 @@ public class SkierServicesImpl implements ISkierServices {
     // Constante pour éviter la duplication de "Skier not found"
     private static final String SKIER_NOT_FOUND = "Skier not found";
     private static final String SUBSCRIPTION_NOT_FOUND = "Subscription not found";
-
-
+    
     private ISkierRepository skierRepository;
     private IPisteRepository pisteRepository;
     private ICourseRepository courseRepository;
@@ -57,7 +56,6 @@ public class SkierServicesImpl implements ISkierServices {
         skier.setSubscription(subscription);
         return skierRepository.save(skier);
     }
-
 
     @Override
     public Skier addSkierAndAssignToCourse(Skier skier, Long numCourse) {
