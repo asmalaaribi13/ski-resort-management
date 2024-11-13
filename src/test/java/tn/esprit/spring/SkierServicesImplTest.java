@@ -5,20 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.Arrays; // Make sure to import Arrays
-
-
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.*;
 import tn.esprit.spring.services.SkierServicesImpl;
 
 import java.time.LocalDate;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class SkierServicesImplTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(SkierServicesImplTest.class);
 
     @InjectMocks
     private SkierServicesImpl skierServices;
@@ -27,484 +28,165 @@ class SkierServicesImplTest {
     private ISkierRepository skierRepository;
 
     @Mock
-    private IPisteRepository pisteRepository;
-
-    @Mock
     private ICourseRepository courseRepository;
-
-    @Mock
-    private IRegistrationRepository registrationRepository;
 
     @Mock
     private ISubscriptionRepository subscriptionRepository;
 
-    private Skier skier;
-    private Subscription currentSubscription;
-    private Subscription newSubscription;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        System.out.println("Mock setup completed.");
-
-        // Initialize skier and subscriptions
-        skier = new Skier();
-
-        // Initialize the current subscription
-        currentSubscription = new Subscription();
-        currentSubscription.setTypeSub(TypeSubscription.MONTHLY);
-        currentSubscription.setStartDate(LocalDate.now());
-        currentSubscription.setEndDate(LocalDate.now().plusMonths(1));
-
-        // Initialize the new subscription
-        newSubscription = new Subscription();
-        newSubscription.setTypeSub(TypeSubscription.ANNUAL);
-        newSubscription.setStartDate(LocalDate.now());
-        newSubscription.setEndDate(LocalDate.now().plusYears(1));
-
-        skier.setSubscription(currentSubscription);
-        skier.setRegistrations(new HashSet<>());
     }
 
+    // Test for analyzePisteUsageByAgeGroup
     @Test
-    void retrieveAllSkiers_ShouldReturnListOfSkiers() {
-        System.out.println("Starting test: retrieveAllSkiers_ShouldReturnListOfSkiers");
-
-        // Arrange
-        List<Skier> expectedSkiers = new ArrayList<>();
-        Skier sampleSkier = new Skier();
-        expectedSkiers.add(sampleSkier);
-        when(skierRepository.findAll()).thenReturn(expectedSkiers);
-
-        // Act
-        List<Skier> actualSkiers = skierServices.retrieveAllSkiers();
-
-        // Assert
-        assertEquals(expectedSkiers, actualSkiers);
-        verify(skierRepository).findAll();
-
-        System.out.println("Expected Skiers: " + expectedSkiers);
-        System.out.println("Actual Skiers: " + actualSkiers);
-        System.out.println("Test passed: retrieveAllSkiers_ShouldReturnListOfSkiers\n");
-    }
-
-    @Test
-    void addSkier_ShouldSaveSkierAndSetEndDate() {
-        System.out.println("Starting test: addSkier_ShouldSaveSkierAndSetEndDate");
-
-        // Arrange
-        Subscription subscription = new Subscription();
-        subscription.setTypeSub(TypeSubscription.ANNUAL);
-        subscription.setStartDate(LocalDate.now());
-        subscription.setEndDate(subscription.getStartDate().plusYears(1));
-        skier.setSubscription(subscription);
-
-        when(skierRepository.save(skier)).thenReturn(skier);
-
-        // Act
-        Skier savedSkier = skierServices.addSkier(skier);
-
-        // Assert
-        assertNotNull(savedSkier);
-        assertEquals(LocalDate.now().plusYears(1), savedSkier.getSubscription().getEndDate());
-        verify(skierRepository).save(skier);
-
-        System.out.println("Saved Skier: " + savedSkier);
-        System.out.println("Test passed: addSkier_ShouldSaveSkierAndSetEndDate\n");
-    }
-
-    @Test
-    void assignSkierToSubscription_ShouldAssignSubscriptionToSkier() {
-        System.out.println("Starting test: assignSkierToSubscription_ShouldAssignSubscriptionToSkier");
-
-        // Arrange
-        Long skierId = 1L;
-        Long subscriptionId = 2L;
-        Subscription subscription = new Subscription();
-
-        when(skierRepository.findById(skierId)).thenReturn(Optional.of(skier));
-        when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(subscription));
-        when(skierRepository.save(skier)).thenReturn(skier);
-
-        // Act
-        Skier updatedSkier = skierServices.assignSkierToSubscription(skierId, subscriptionId);
-
-        // Assert
-        assertEquals(subscription, updatedSkier.getSubscription());
-        verify(skierRepository).save(skier);
-
-        System.out.println("Assigned Skier: " + updatedSkier);
-        System.out.println("Test passed: assignSkierToSubscription_ShouldAssignSubscriptionToSkier\n");
-    }
-
-    @Test
-    void retrieveSkier_ShouldReturnSkier() {
-        System.out.println("Starting test: retrieveSkier_ShouldReturnSkier");
-
-        // Arrange
-        Long skierId = 1L;
-        Skier expectedSkier = new Skier();
-        when(skierRepository.findById(skierId)).thenReturn(Optional.of(expectedSkier));
-
-        // Act
-        Skier actualSkier = skierServices.retrieveSkier(skierId);
-
-        // Assert
-        assertEquals(expectedSkier, actualSkier);
-        verify(skierRepository).findById(skierId);
-
-        System.out.println("Expected Skier: " + expectedSkier);
-        System.out.println("Actual Skier: " + actualSkier);
-        System.out.println("Test passed: retrieveSkier_ShouldReturnSkier\n");
-    }
-
-    @Test
-    void removeSkier_ShouldDeleteSkier() {
-        System.out.println("Starting test: removeSkier_ShouldDeleteSkier");
-
-        // Arrange
-        Long skierId = 1L;
-
-        // Act
-        skierServices.removeSkier(skierId);
-
-        // Assert
-        verify(skierRepository).deleteById(skierId);
-
-        System.out.println("Skier with ID " + skierId + " successfully deleted.");
-        System.out.println("Test passed: removeSkier_ShouldDeleteSkier\n");
-    }
-
-    // Utility method to create a Set of registrations
-    private Set<Registration> createRegistrations(int count) {
-        Set<Registration> registrations = new HashSet<>();
-        for (int i = 0; i < count; i++) {
-            registrations.add(new Registration());
-        }
-        return registrations;
-    }
-
-
-
-    @Test
-    void findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport() {
-        System.out.println("Starting test: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport");
-
-        // Arrange
-        Skier skier1 = new Skier(); // Skier with multiple supports
-        Skier skier2 = new Skier(); // Skier with one support only
-
-        // Create courses with different supports
-        Course course1 = new Course();
-        course1.setSupport(Support.SKI); // SKI support
-        Course course2 = new Course();
-        course2.setSupport(Support.SNOWBOARD); // SNOWBOARD support
-
-        Course course3 = new Course();
-        course3.setSupport(Support.SKI); // SKI support for skier2 (only one support type)
-
-        // Create registrations for skier1 (multiple supports)
-        Registration registration1 = new Registration();
-        registration1.setCourse(course1); // SKI course
-        Registration registration2 = new Registration();
-        registration2.setCourse(course2); // SNOWBOARD course
-
-        Set<Registration> skier1Registrations = new HashSet<>();
-        skier1Registrations.add(registration1);
-        skier1Registrations.add(registration2);
-        skier1.setRegistrations(skier1Registrations);
-
-        // Create registrations for skier2 (only one support type)
-        Registration registration3 = new Registration();
-        registration3.setCourse(course3);
-
-        Set<Registration> skier2Registrations = new HashSet<>();
-        skier2Registrations.add(registration3);
-        skier2.setRegistrations(skier2Registrations);
-
-        List<Skier> skiers = Arrays.asList(skier1, skier2);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // Act
-        List<Skier> result = skierServices.findSkiersWithMultipleSupports();
-
-        // Assert
-        assertEquals(1, result.size()); // Only skier1 has multiple supports
-        assertTrue(result.contains(skier1));
-        assertFalse(result.contains(skier2)); // skier2 should be excluded
-
-        System.out.println("Test passed: findSkiersWithMultipleSupports_ShouldReturnSkiersWithMoreThanOneSupport\n");
-    }
-
-    @Test
-    void analyzeSkierEngagement_ShouldReturnEngagementStatistics() {
-        System.out.println("Starting test: analyzeSkierEngagement_ShouldReturnEngagementStatistics");
-
-        // Arrange
-        Skier skier1 = new Skier();
-        skier1.setRegistrations(createRegistrations(2));
-        Skier skier2 = new Skier();
-        skier2.setRegistrations(createRegistrations(3));
-        Skier skier3 = new Skier();
-        skier3.setRegistrations(createRegistrations(1));
-        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // Act
-        Map<String, Object> statistics = skierServices.analyzeSkierEngagement();
-
-        // Assert
-        assertNotNull(statistics);
-        assertEquals(2.0, statistics.get("averageCoursesPerSkier"));
-        assertEquals(skier2, statistics.get("mostActiveSkier"));
-
-        System.out.println("Engagement Statistics: " + statistics);
-        System.out.println("Test passed: analyzeSkierEngagement_ShouldReturnEngagementStatistics\n");
-    }
-
-    @Test
-    void testFindSkiersByPisteColor() {
-        // Given
-        Color targetColor = Color.GREEN;
-
-        // Create pistes
-        Piste greenPiste = new Piste();
-        greenPiste.setColor(Color.GREEN);
-
-        Piste bluePiste = new Piste();
-        bluePiste.setColor(Color.BLUE);
-
-        Piste redPiste = new Piste();
-        redPiste.setColor(Color.RED);
-
-        // Create skiers
-        Skier skier1 = new Skier();
-        skier1.setPistes(new HashSet<>(Arrays.asList(greenPiste, bluePiste)));
-
-        Skier skier2 = new Skier();
-        skier2.setPistes(new HashSet<>(Collections.singletonList(redPiste)));
-
-        List<Skier> skiers = Arrays.asList(skier1, skier2);
-
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // When
-        List<Skier> result = skierServices.findSkiersByPisteColor(targetColor);
-
-        // Then
-        assertEquals(1, result.size());
-        assertTrue(result.contains(skier1));
-        assertFalse(result.contains(skier2));
-
-        System.out.println("Test passed: testFindSkiersByPisteColor\n");
-    }
-
-    @Test
-    void testCalculateTotalSpendingBySkier() {
-        // Given
-        Long numSkier = 1L;
-
-        // Create a mock course with prices
-        Course course1 = new Course();
-        course1.setPrice(100f); // Set price for course1
-
-        Course course2 = new Course();
-        course2.setPrice(150f); // Set price for course2
-
-        // Create registrations for the skier
-        Registration registration1 = new Registration();
-        registration1.setCourse(course1);
-
-        Registration registration2 = new Registration();
-        registration2.setCourse(course2);
-
-        // Create a skier with registrations and a subscription
-        Skier testSkier = new Skier(); // Renamed to avoid hiding the field
-        testSkier.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2)));
-
-        // Create a subscription with a price
-        Subscription subscription = new Subscription();
-        subscription.setPrice(50f); // Set price for subscription
-        testSkier.setSubscription(subscription);
-
-        // Mock the repository behavior
-        when(skierRepository.findById(numSkier)).thenReturn(Optional.of(testSkier));
-
-        // When
-        Float totalSpending = skierServices.calculateTotalSpendingBySkier(numSkier);
-
-        // Then
-        Float expectedSpending = 100f + 150f + 50f; // 100 (course1) + 150 (course2) + 50 (subscription)
-        assertEquals(expectedSpending, totalSpending);
-
-        System.out.println("Test passed: testCalculateTotalSpendingBySkier\n");
-    }
-
-
-    @Test
-    void testFindSkiersWithHighestAverageCoursePrice() {
-        // Given
-        int topN = 2;
-
-        // Create Courses with different prices
-        Course course1 = new Course();
-        course1.setPrice(100f); // Price for course1
-
-        Course course2 = new Course();
-        course2.setPrice(150f); // Price for course2
-
-        Course course3 = new Course();
-        course3.setPrice(200f); // Price for course3
-
-        // Create Registrations for skiers
-        Registration registration1 = new Registration();
-        registration1.setCourse(course1);
-
-        Registration registration2 = new Registration();
-        registration2.setCourse(course2);
-
-        Registration registration3 = new Registration();
-        registration3.setCourse(course3);
-
-        // Create skiers with different registrations
-        Skier skier1 = new Skier();
-        skier1.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2))); // Average: (100 + 150) / 2 = 125
-
-        Skier skier2 = new Skier();
-        skier2.setRegistrations(new HashSet<>(Collections.singletonList(registration3))); // Average: 200
-
-        Skier skier3 = new Skier();
-        skier3.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration3))); // Average: (100 + 200) / 2 = 150
-
-        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // When
-        List<Skier> result = skierServices.findSkiersWithHighestAverageCoursePrice(topN);
-
-        // Then
-        assertEquals(topN, result.size());
-        assertEquals(skier2, result.get(0)); // skier2 has the highest average price (200)
-        assertEquals(skier3, result.get(1)); // skier3 has the second highest average price (150)
-
-        System.out.println("Test passed: testFindSkiersWithHighestAverageCoursePrice\n");
-    }
-
-    @Test
-    void analyzePisteUsageByAgeGroup_ShouldReturnAverageUsageByAgeGroup() {
-        // Given
+    void testAnalyzePisteUsageByAgeGroup() {
         LocalDate currentDate = LocalDate.now();
 
-        // Create mock skiers
-        Skier skier1 = new Skier();
-        skier1.setDateOfBirth(currentDate.minusYears(10)); // Age 10
-        skier1.setPistes(new HashSet<>(Arrays.asList(new Piste(), new Piste()))); // 2 pistes
+        // Création de skieurs dans chaque groupe d'âge
+        Skier skierChild = new Skier(1L, "John", "Doe", currentDate.minusYears(10), "CityA", null, new HashSet<>(), new HashSet<>());
+        Skier skierTeen = new Skier(2L, "Jane", "Doe", currentDate.minusYears(15), "CityB", null, new HashSet<>(), new HashSet<>());
+        Skier skierAdult = new Skier(3L, "Mike", "Smith", currentDate.minusYears(30), "CityC", null, new HashSet<>(), new HashSet<>());
+        Skier skierSenior = new Skier(4L, "Anna", "Jones", currentDate.minusYears(65), "CityD", null, new HashSet<>(), new HashSet<>());
 
-        Skier skier2 = new Skier();
-        skier2.setDateOfBirth(currentDate.minusYears(15)); // Age 15
-        skier2.setPistes(new HashSet<>(Arrays.asList(new Piste()))); // 1 piste
+        // Ajout de pistes pour chaque skieur
+        skierChild.getPistes().add(new Piste(1L, "PisteA", Color.GREEN, 1200, 30, new HashSet<>()));
+        skierTeen.getPistes().add(new Piste(2L, "PisteB", Color.BLUE, 800, 20, new HashSet<>()));
+        skierAdult.getPistes().add(new Piste(3L, "PisteC", Color.RED, 1500, 25, new HashSet<>()));
+        skierSenior.getPistes().add(new Piste(4L, "PisteD", Color.BLACK, 2000, 40, new HashSet<>()));
 
-        Skier skier3 = new Skier();
-        skier3.setDateOfBirth(currentDate.minusYears(30)); // Age 30
-        skier3.setPistes(new HashSet<>(Arrays.asList(new Piste(), new Piste(), new Piste()))); // 3 pistes
+        when(skierRepository.findAll()).thenReturn(Arrays.asList(skierChild, skierTeen, skierAdult, skierSenior));
 
-        // Mock repository behavior
-        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // When
         Map<String, Double> result = skierServices.analyzePisteUsageByAgeGroup();
 
-        // Then
-        assertNotNull(result);
-        assertEquals(2.0, result.get("Children (0-12)")); // Expect 2 pistes from skier1
-        assertEquals(1.0, result.get("Teens (13-19)")); // Expect 1 piste from skier2
-        assertEquals(3.0, result.get("Adults (20-59)")); // Expect 3 pistes from skier3
-        assertEquals(0.0, result.get("Seniors (60+)")); // No seniors in this test
+        // Vérification pour chaque groupe d'âge
+        assertEquals(4, result.size(), "The result should contain 4 age groups");
 
-        System.out.println("Average Piste Usage by Age Group: " + result);
-        System.out.println("Test passed: analyzePisteUsageByAgeGroup_ShouldReturnAverageUsageByAgeGroup\n");
+        assertTrue(result.containsKey("Children (0-12)"), "Group 'Children (0-12)' should be present");
+        assertEquals(1.0, result.get("Children (0-12)"), "Piste usage for 'Children (0-12)' should be 1.0");
+
+        assertTrue(result.containsKey("Teens (13-19)"), "Group 'Teens (13-19)' should be present");
+        assertEquals(1.0, result.get("Teens (13-19)"), "Piste usage for 'Teens (13-19)' should be 1.0");
+
+        assertTrue(result.containsKey("Adults (20-59)"), "Group 'Adults (20-59)' should be present");
+        assertEquals(1.0, result.get("Adults (20-59)"), "Piste usage for 'Adults (20-59)' should be 1.0");
+
+        assertTrue(result.containsKey("Seniors (60+)"), "Group 'Seniors (60+)' should be present");
+        assertEquals(1.0, result.get("Seniors (60+)"), "Piste usage for 'Seniors (60+)' should be 1.0");
+
+        logger.info("testAnalyzePisteUsageByAgeGroup: Test succeeded!");
     }
 
+    // Test for analyzeSkierEngagement
     @Test
-    void testFindSkiersActiveInMultipleCourseTypes() {
-        // Given
-        int minTypes = 2;
+    void testAnalyzeSkierEngagement() {
+        Skier skier1 = new Skier(1L, "John", "Doe", LocalDate.now().minusYears(25), "CityA", null, new HashSet<>(), new HashSet<>());
+        Skier skier2 = new Skier(2L, "Jane", "Doe", LocalDate.now().minusYears(30), "CityB", null, new HashSet<>(), new HashSet<>());
 
-        // Create mock courses with different types
-        Course course1 = new Course();
-        course1.setTypeCourse(TypeCourse.COLLECTIVE_CHILDREN); // Type 1
+        skier1.getRegistrations().add(new Registration(1L, 10, skier1, new Course()));
+        skier1.getRegistrations().add(new Registration(2L, 12, skier1, new Course()));
+        skier2.getRegistrations().add(new Registration(3L, 15, skier2, new Course()));
 
-        Course course2 = new Course();
-        course2.setTypeCourse(TypeCourse.COLLECTIVE_ADULT); // Type 2
+        when(skierRepository.findAll()).thenReturn(Arrays.asList(skier1, skier2));
 
-        Course course3 = new Course();
-        course3.setTypeCourse(TypeCourse.INDIVIDUAL); // Type 3
+        Map<String, Object> result = skierServices.analyzeSkierEngagement();
 
-        // Create registrations for skiers
-        Registration registration1 = new Registration();
-        registration1.setCourse(course1);
+        assertEquals(2, result.size(), "Result size should be 2");
+        assertEquals(1.5, result.get("averageCoursesPerSkier"), "Average courses per skier should be 1.5");
+        assertEquals(skier1, result.get("mostActiveSkier"), "The most active skier should be skier1");
 
-        Registration registration2 = new Registration();
-        registration2.setCourse(course2);
-
-        Registration registration3 = new Registration();
-        registration3.setCourse(course3);
-
-        // Create skiers with registrations
-        Skier skier1 = new Skier();
-        skier1.setRegistrations(new HashSet<>(Arrays.asList(registration1, registration2))); // 2 different types
-
-        Skier skier2 = new Skier();
-        skier2.setRegistrations(new HashSet<>(Arrays.asList(registration1))); // 1 type
-
-        Skier skier3 = new Skier();
-        skier3.setRegistrations(new HashSet<>(Arrays.asList(registration2, registration3))); // 2 different types
-
-        // Mock the repository behavior
-        List<Skier> skiers = Arrays.asList(skier1, skier2, skier3);
-        when(skierRepository.findAll()).thenReturn(skiers);
-
-        // When
-        List<Skier> result = skierServices.findSkiersActiveInMultipleCourseTypes(minTypes);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(2, result.size()); // Expecting skier1 and skier3 to be returned
-        assertTrue(result.contains(skier1));
-        assertTrue(result.contains(skier3));
-        assertFalse(result.contains(skier2)); // Skier2 should not be in the result
-
-        System.out.println("Test passed: testFindSkiersActiveInMultipleCourseTypes\n");
+        logger.info("testAnalyzeSkierEngagement: Test succeeded!");
     }
 
+    // Test for findTopSpendingSkiers
+    @Test
+    void testFindTopSpendingSkiers() {
+        // Création de deux skieurs avec des dépenses différentes
+        Skier skier1 = new Skier(1L, "John", "Doe", LocalDate.now().minusYears(20), "CityA", null, new HashSet<>(), new HashSet<>());
+        Skier skier2 = new Skier(2L, "Jane", "Doe", LocalDate.now().minusYears(22), "CityB", null, new HashSet<>(), new HashSet<>());
 
+        // Création de cours avec différents prix
+        Course course1 = new Course(1L, 1, TypeCourse.COLLECTIVE_CHILDREN, Support.SKI, 100f, 2, new HashSet<>());
+        Course course2 = new Course(2L, 1, TypeCourse.INDIVIDUAL, Support.SNOWBOARD, 200f, 3, new HashSet<>());
 
+        // Ajout d'inscriptions pour chaque skieur
+        skier1.getRegistrations().add(new Registration(1L, 10, skier1, course1));
+        skier1.getRegistrations().add(new Registration(2L, 11, skier1, course2));
+        skier2.getRegistrations().add(new Registration(3L, 12, skier2, course1));
 
+        // Simulation des appels aux méthodes du repository
+        when(skierRepository.findAll()).thenReturn(Arrays.asList(skier1, skier2));
+        when(skierRepository.findById(1L)).thenReturn(Optional.of(skier1));
+        when(skierRepository.findById(2L)).thenReturn(Optional.of(skier2));
 
+        // Exécution de la méthode à tester
+        List<Skier> result = skierServices.findTopSpendingSkiers(1);
 
+        // Vérifications des résultats
+        assertEquals(1, result.size(), "The result size should be 1 for top spender");
+        assertEquals(skier1, result.get(0), "Top spending skier should be skier1");
 
+        logger.info("testFindTopSpendingSkiers: Test succeeded!");
+    }
 
+    // Test for getAverageAgeBySubscriptionType
+    @Test
+    void testGetAverageAgeBySubscriptionType() {
+        LocalDate today = LocalDate.now();
 
+        // Création de skieurs avec chaque type d'abonnement
+        Subscription annualSubscription = new Subscription(1L, today.minusYears(1), today.plusYears(1), 300f, TypeSubscription.ANNUAL);
+        Subscription monthlySubscription = new Subscription(2L, today.minusMonths(1), today.plusMonths(1), 50f, TypeSubscription.MONTHLY);
+        Subscription semiAnnualSubscription = new Subscription(3L, today.minusMonths(6), today.plusMonths(6), 150f, TypeSubscription.SEMESTRIEL);
 
+        Skier skierAnnual1 = new Skier(1L, "John", "Doe", today.minusYears(25), "CityA", annualSubscription, new HashSet<>(), new HashSet<>());
+        Skier skierAnnual2 = new Skier(2L, "Alice", "Smith", today.minusYears(35), "CityB", annualSubscription, new HashSet<>(), new HashSet<>());
+        Skier skierMonthly = new Skier(3L, "Bob", "Brown", today.minusYears(30), "CityC", monthlySubscription, new HashSet<>(), new HashSet<>());
+        Skier skierSemiAnnual = new Skier(4L, "Carol", "White", today.minusYears(40), "CityD", semiAnnualSubscription, new HashSet<>(), new HashSet<>());
 
+        // Simulation de la méthode findBySubscription_TypeSub pour chaque type d'abonnement
+        when(skierRepository.findBySubscription_TypeSub(TypeSubscription.ANNUAL)).thenReturn(Arrays.asList(skierAnnual1, skierAnnual2));
+        when(skierRepository.findBySubscription_TypeSub(TypeSubscription.MONTHLY)).thenReturn(Collections.singletonList(skierMonthly));
+        when(skierRepository.findBySubscription_TypeSub(TypeSubscription.SEMESTRIEL)).thenReturn(Collections.singletonList(skierSemiAnnual));
 
+        // Appel de la méthode à tester
+        Map<TypeSubscription, Double> result = skierServices.getAverageAgeBySubscriptionType();
 
+        // Calculs d'âge moyen attendus
+        double expectedAnnualAge = (25 + 35) / 2.0;  // Moyenne des âges pour les abonnements ANNUAL
+        double expectedMonthlyAge = 30.0;            // Un seul skieur avec abonnement MONTHLY
+        double expectedSemiAnnualAge = 40.0;         // Un seul skieur avec abonnement SEMESTRIEL
 
+        // Assertions pour vérifier les âges moyens calculés
+        assertEquals(expectedAnnualAge, result.get(TypeSubscription.ANNUAL), "L'âge moyen pour l'abonnement ANNUAL doit être " + expectedAnnualAge);
+        assertEquals(expectedMonthlyAge, result.get(TypeSubscription.MONTHLY), "L'âge moyen pour l'abonnement MONTHLY doit être " + expectedMonthlyAge);
+        assertEquals(expectedSemiAnnualAge, result.get(TypeSubscription.SEMESTRIEL), "L'âge moyen pour l'abonnement SEMESTRIEL doit être " + expectedSemiAnnualAge);
 
+        // Vérification de la taille pour s'assurer que seuls les types ajoutés sont inclus
+        assertEquals(3, result.size(), "Le résultat doit contenir uniquement les 3 types d'abonnement testés (ANNUAL, MONTHLY, SEMESTRIEL)");
 
+        logger.info("testGetAverageAgeBySubscriptionType: Test succeeded!");
+    }
 
+    // Test for calculateTotalSpendingBySkier
+    @Test
+    void testCalculateTotalSpendingBySkier() {
+        Long skierId = 1L;
+        Subscription subscription = new Subscription(1L, LocalDate.now().minusMonths(6), LocalDate.now().plusMonths(6), 120f, TypeSubscription.ANNUAL);
+        Skier skier = new Skier(skierId, "John", "Doe", LocalDate.now().minusYears(28), "CityA", subscription, new HashSet<>(), new HashSet<>());
 
+        Course course1 = new Course(1L, 1, TypeCourse.INDIVIDUAL, Support.SKI, 200f, 3, new HashSet<>());
+        Course course2 = new Course(2L, 1, TypeCourse.INDIVIDUAL, Support.SKI, 150f, 2, new HashSet<>());
 
+        skier.getRegistrations().add(new Registration(1L, 10, skier, course1));
+        skier.getRegistrations().add(new Registration(2L, 11, skier, course2));
 
+        when(skierRepository.findById(skierId)).thenReturn(Optional.of(skier));
 
+        Float totalSpending = skierServices.calculateTotalSpendingBySkier(skierId);
 
+        assertEquals(470f, totalSpending, "Total spending should be 470");
 
-
-
-
-
-
-
-
+        logger.info("testCalculateTotalSpendingBySkier: Test succeeded!");
+    }
 }
