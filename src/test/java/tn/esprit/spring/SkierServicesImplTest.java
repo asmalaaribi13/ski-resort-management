@@ -11,11 +11,15 @@ import tn.esprit.spring.services.SkierServicesImpl;
 
 import java.time.LocalDate;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class SkierServicesImplTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(SkierServicesImplTest.class);
 
     @InjectMocks
     private SkierServicesImpl skierServices;
@@ -70,7 +74,7 @@ class SkierServicesImplTest {
         assertTrue(result.containsKey("Seniors (60+)"), "Group 'Seniors (60+)' should be present");
         assertEquals(1.0, result.get("Seniors (60+)"), "Piste usage for 'Seniors (60+)' should be 1.0");
 
-        System.out.println("testAnalyzePisteUsageByAgeGroup: Test succeeded!");
+        logger.info("testAnalyzePisteUsageByAgeGroup: Test succeeded!");
     }
 
     // Test for analyzeSkierEngagement
@@ -91,7 +95,7 @@ class SkierServicesImplTest {
         assertEquals(1.5, result.get("averageCoursesPerSkier"), "Average courses per skier should be 1.5");
         assertEquals(skier1, result.get("mostActiveSkier"), "The most active skier should be skier1");
 
-        System.out.println("testAnalyzeSkierEngagement: Test succeeded!");
+        logger.info("testAnalyzeSkierEngagement: Test succeeded!");
     }
 
     // Test for findTopSpendingSkiers
@@ -122,7 +126,7 @@ class SkierServicesImplTest {
         assertEquals(1, result.size(), "The result size should be 1 for top spender");
         assertEquals(skier1, result.get(0), "Top spending skier should be skier1");
 
-        System.out.println("testFindTopSpendingSkiers: Test succeeded!");
+        logger.info("testFindTopSpendingSkiers: Test succeeded!");
     }
 
     // Test for getAverageAgeBySubscriptionType
@@ -161,7 +165,7 @@ class SkierServicesImplTest {
         // Vérification de la taille pour s'assurer que seuls les types ajoutés sont inclus
         assertEquals(3, result.size(), "Le résultat doit contenir uniquement les 3 types d'abonnement testés (ANNUAL, MONTHLY, SEMESTRIEL)");
 
-        System.out.println("testGetAverageAgeBySubscriptionType: Test succeeded!");
+        logger.info("testGetAverageAgeBySubscriptionType: Test succeeded!");
     }
 
     // Test for calculateTotalSpendingBySkier
@@ -183,6 +187,6 @@ class SkierServicesImplTest {
 
         assertEquals(470f, totalSpending, "Total spending should be 470");
 
-        System.out.println("testCalculateTotalSpendingBySkier: Test succeeded!");
+        logger.info("testCalculateTotalSpendingBySkier: Test succeeded!");
     }
 }
