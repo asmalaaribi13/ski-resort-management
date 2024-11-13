@@ -13,10 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class SkierServicesImpl implements ISkierServices {
 
-    // Constante pour éviter la duplication de "Skier not found"
-    private static final String SKIER_NOT_FOUND = "Skier not found";
-    private static final String SUBSCRIPTION_NOT_FOUND = "Subscription not found";
-    
+    // Common constants
+    private static final String NOT_FOUND_SUFFIX = " not found";
+    private static final String SKIER_NOT_FOUND = "Skier" + NOT_FOUND_SUFFIX;
+    private static final String SUBSCRIPTION_NOT_FOUND = "Subscription" + NOT_FOUND_SUFFIX;
+    private static final String PISTE_NOT_FOUND = "Piste" + NOT_FOUND_SUFFIX;
+
     private ISkierRepository skierRepository;
     private IPisteRepository pisteRepository;
     private ICourseRepository courseRepository;
@@ -82,15 +84,12 @@ public class SkierServicesImpl implements ISkierServices {
 
     @Override
     public Skier assignSkierToPiste(Long numSkieur, Long numPiste) {
-        Skier skier = skierRepository.findById(numSkieur).orElse(null);
-        Piste piste = pisteRepository.findById(numPiste).orElse(null);
+        Skier skier = skierRepository.findById(numSkieur)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
 
-        if (skier == null) {
-            throw new IllegalArgumentException("Skier with ID " + numSkieur + " not found");
-        }
-        if (piste == null) {
-            throw new IllegalArgumentException("Piste with ID " + numPiste + " not found");
-        }
+        Piste piste = pisteRepository.findById(numPiste)
+                .orElseThrow(() -> new IllegalArgumentException(PISTE_NOT_FOUND));
+
         if (skier.getPistes() == null) {
             skier.setPistes(new HashSet<>());
         }

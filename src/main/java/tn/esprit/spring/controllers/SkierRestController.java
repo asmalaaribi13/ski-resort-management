@@ -43,32 +43,16 @@ public class SkierRestController {
         skier.setLastName(skierDTO.getLastName());
         skier.setCity(skierDTO.getCity());
         skier.setDateOfBirth(skierDTO.getDateOfBirth());
-
-        // Créer un abonnement si le type et la date de début sont définis
-        if (skierDTO.getTypeSubscription() != null && skierDTO.getStartDate() != null) {
+        // Handle subscription details
+        if (skierDTO.getTypeSubscription() != null) {
             Subscription subscription = new Subscription();
-            subscription.setStartDate(skierDTO.getStartDate());
             subscription.setTypeSub(skierDTO.getTypeSubscription());
-            subscription.setPrice(skierDTO.getPrice()); // Définir le prix de l'abonnement
-
-            // Calculer la date de fin en fonction du type d'abonnement
-            switch (skierDTO.getTypeSubscription()) {
-                case ANNUAL:
-                    subscription.setEndDate(skierDTO.getStartDate().plusYears(1));
-                    break;
-                case SEMESTRIEL:
-                    subscription.setEndDate(skierDTO.getStartDate().plusMonths(6));
-                    break;
-                case MONTHLY:
-                    subscription.setEndDate(skierDTO.getStartDate().plusMonths(1));
-                    break;
-            }
-
-            skier.setSubscription(subscription); // Associer l'abonnement
+            subscription.setStartDate(skierDTO.getStartDate());
+            subscription.setPrice(skierDTO.getPrice());
+            skier.setSubscription(subscription);
         }
         return skier;
     }
-
 
     @Operation(description = "Add Skier And Assign To Course")
     @PostMapping("/addSkierAndAssignToCourse/{numCourse}")
@@ -160,12 +144,15 @@ public class SkierRestController {
         skierDTO.setFirstName(skier.getFirstName());
         skierDTO.setLastName(skier.getLastName());
         skierDTO.setCity(skier.getCity());
+        skierDTO.setDateOfBirth(skier.getDateOfBirth());
         if (skier.getSubscription() != null) {
             skierDTO.setTypeSubscription(skier.getSubscription().getTypeSub());
+            skierDTO.setStartDate(skier.getSubscription().getStartDate());
+            skierDTO.setPrice(skier.getSubscription().getPrice());
         }
         return skierDTO;
     }
-
+    
     @Operation(description = "Analyze Piste Usage By Age Group")
     @GetMapping("/analyzePisteUsageByAgeGroup")
     @ApiResponses(value = {
