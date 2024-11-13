@@ -23,7 +23,6 @@ public class SkierServicesImpl implements ISkierServices {
     private ICourseRepository courseRepository;
     private IRegistrationRepository registrationRepository;
     private ISubscriptionRepository subscriptionRepository;
-    private IInstructorRepository instructorRepository;
 
     @Override
     public List<Skier> retrieveAllSkiers() {
