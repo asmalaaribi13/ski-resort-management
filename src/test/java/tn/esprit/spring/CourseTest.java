@@ -14,6 +14,7 @@ import tn.esprit.spring.services.CourseServicesImpl;
 import java.util.Collections;
 import java.util.List;
 
+import static jdk.internal.org.objectweb.asm.util.CheckClassAdapter.verify;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
