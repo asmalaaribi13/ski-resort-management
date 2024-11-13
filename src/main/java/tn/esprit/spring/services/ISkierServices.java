@@ -18,13 +18,9 @@ public interface ISkierServices {
 	/*------------------------------------------------------------------------------------------------*/
 
 	Map<String, Double> analyzePisteUsageByAgeGroup();
-
 	Map<String, Object> analyzeSkierEngagement();
-
 	List<Skier> findTopSpendingSkiers(int topN);
-
 	Map<TypeSubscription, Double> getAverageAgeBySubscriptionType();
-
 	Float calculateTotalSpendingBySkier(Long numSkier);
 
 

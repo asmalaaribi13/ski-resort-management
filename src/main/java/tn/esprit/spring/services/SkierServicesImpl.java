@@ -2,6 +2,7 @@ package tn.esprit.spring.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.spring.dto.SkierDTO;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.*;
 
@@ -15,6 +16,8 @@ public class SkierServicesImpl implements ISkierServices {
 
     // Constante pour éviter la duplication de "Skier not found"
     private static final String SKIER_NOT_FOUND = "Skier not found";
+    private static final String SUBSCRIPTION_NOT_FOUND = "Subscription not found";
+
 
     private ISkierRepository skierRepository;
     private IPisteRepository pisteRepository;
@@ -46,8 +49,10 @@ public class SkierServicesImpl implements ISkierServices {
 
     @Override
     public Skier assignSkierToSubscription(Long numSkier, Long numSubscription) {
-        Skier skier = skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
-        Subscription subscription = subscriptionRepository.findById(numSubscription).orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
+        Skier skier = skierRepository.findById(numSkier)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        Subscription subscription = subscriptionRepository.findById(numSubscription)
+                .orElseThrow(() -> new IllegalArgumentException(SUBSCRIPTION_NOT_FOUND));
 
         skier.setSubscription(subscription);
         return skierRepository.save(skier);
@@ -56,38 +61,40 @@ public class SkierServicesImpl implements ISkierServices {
     @Override
     public Skier addSkierAndAssignToCourse(Skier skier, Long numCourse) {
         Skier savedSkier = skierRepository.save(skier);
-        Course course = courseRepository.getById(numCourse);
-        Set<Registration> registrations = savedSkier.getRegistrations();
-        for (Registration r : registrations) {
-            r.setSkier(savedSkier);
-            r.setCourse(course);
-            registrationRepository.save(r);
-        }
+        Course course = courseRepository.findById(numCourse)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        savedSkier.getRegistrations().forEach(registration -> {
+            registration.setSkier(savedSkier);
+            registration.setCourse(course);
+            registrationRepository.save(registration);
+        });
+
         return savedSkier;
     }
 
     @Override
     public void removeSkier(Long numSkier) {
+        if (!skierRepository.existsById(numSkier)) {
+            throw new IllegalArgumentException(SKIER_NOT_FOUND);
+        }
         skierRepository.deleteById(numSkier);
     }
 
     @Override
     public Skier retrieveSkier(Long numSkier) {
-        return skierRepository.findById(numSkier).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        return skierRepository.findById(numSkier)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
     }
 
     @Override
     public Skier assignSkierToPiste(Long numSkieur, Long numPiste) {
-        Skier skier = skierRepository.findById(numSkieur).orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
-        Piste piste = pisteRepository.findById(numPiste).orElseThrow(() -> new IllegalArgumentException("Piste not found"));
+        Skier skier = skierRepository.findById(numSkieur)
+                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        Piste piste = pisteRepository.findById(numPiste)
+                .orElseThrow(() -> new IllegalArgumentException("Piste not found"));
 
-        Set<Piste> pisteList = skier.getPistes();
-        if (pisteList == null) {
-            pisteList = new HashSet<>();
-        }
-        pisteList.add(piste);
-        skier.setPistes(pisteList);
-
+        skier.getPistes().add(piste);
         return skierRepository.save(skier);
     }
 
@@ -97,6 +104,19 @@ public class SkierServicesImpl implements ISkierServices {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+
+
+    private SkierDTO convertToDTO(Skier skier) {
+        SkierDTO skierDTO = new SkierDTO();
+        skierDTO.setId(skier.getNumSkier());
+        skierDTO.setFirstName(skier.getFirstName());
+        skierDTO.setLastName(skier.getLastName());
+        skierDTO.setCity(skier.getCity());
+        if (skier.getSubscription() != null) {
+            skierDTO.setTypeSubscription(skier.getSubscription().getTypeSub());
+        }
+        return skierDTO;
+    }
 
     @Override
     public Map<String, Double> analyzePisteUsageByAgeGroup() {

@@ -125,7 +125,6 @@ class SkierServicesImplTest {
         System.out.println("testFindTopSpendingSkiers: Test succeeded!");
     }
 
-
     // Test for getAverageAgeBySubscriptionType
     @Test
     void testGetAverageAgeBySubscriptionType() {
@@ -164,7 +163,6 @@ class SkierServicesImplTest {
 
         System.out.println("testGetAverageAgeBySubscriptionType: Test succeeded!");
     }
-
 
     // Test for calculateTotalSpendingBySkier
     @Test
