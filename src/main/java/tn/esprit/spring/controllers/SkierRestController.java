@@ -43,16 +43,33 @@ public class SkierRestController {
         skier.setLastName(skierDTO.getLastName());
         skier.setCity(skierDTO.getCity());
         skier.setDateOfBirth(skierDTO.getDateOfBirth());
-        // Handle subscription details
-        if (skierDTO.getTypeSubscription() != null) {
+
+        // Gestion de l'abonnement
+        if (skierDTO.getTypeSubscription() != null && skierDTO.getStartDate() != null && skierDTO.getPrice() != null) {
             Subscription subscription = new Subscription();
             subscription.setTypeSub(skierDTO.getTypeSubscription());
             subscription.setStartDate(skierDTO.getStartDate());
             subscription.setPrice(skierDTO.getPrice());
+
+            // Calcul de la date de fin selon le type
+            switch (skierDTO.getTypeSubscription()) {
+                case ANNUAL:
+                    subscription.setEndDate(skierDTO.getStartDate().plusYears(1));
+                    break;
+                case SEMESTRIEL:
+                    subscription.setEndDate(skierDTO.getStartDate().plusMonths(6));
+                    break;
+                case MONTHLY:
+                    subscription.setEndDate(skierDTO.getStartDate().plusMonths(1));
+                    break;
+            }
             skier.setSubscription(subscription);
+        } else if (skierDTO.getTypeSubscription() != null) {
+            throw new IllegalArgumentException("Subscription details are incomplete");
         }
         return skier;
     }
+
 
     @Operation(description = "Add Skier And Assign To Course")
     @PostMapping("/addSkierAndAssignToCourse/{numCourse}")
@@ -149,9 +166,11 @@ public class SkierRestController {
             skierDTO.setTypeSubscription(skier.getSubscription().getTypeSub());
             skierDTO.setStartDate(skier.getSubscription().getStartDate());
             skierDTO.setPrice(skier.getSubscription().getPrice());
+            skierDTO.setEndDate(skier.getSubscription().getEndDate()); // Nouveau champ
         }
         return skierDTO;
     }
+
 
     @Operation(description = "Analyze Piste Usage By Age Group")
     @GetMapping("/analyzePisteUsageByAgeGroup")

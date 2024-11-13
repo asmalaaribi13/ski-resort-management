@@ -22,6 +22,7 @@ public class SkierDTO {
 
     // Détails sur l'abonnement
     private TypeSubscription typeSubscription;
+    LocalDate endDate;
     private LocalDate startDate;
     private Float price;
 }
