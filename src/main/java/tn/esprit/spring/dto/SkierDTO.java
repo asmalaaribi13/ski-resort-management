@@ -14,14 +14,14 @@ import java.time.LocalDate;
 public class SkierDTO {
 
     // Champs basiques du skieur
-    private Long numSkier;          // Identifiant unique du skieur
-    private String firstName;       // Prénom
-    private String lastName;        // Nom de famille
-    private String city;            // Ville de résidence
-    private LocalDate dateOfBirth;  // Date de naissance
+    private Long numSkier;
+    private String firstName;
+    private String lastName;
+    private String city;
+    private LocalDate dateOfBirth;
 
     // Détails sur l'abonnement
-    private TypeSubscription typeSubscription; // Type d'abonnement (ANNUAL, SEMESTRIEL, MONTHLY)
-    private LocalDate startDate;               // Date de début de l'abonnement
-    private Float price;                       // Prix de l'abonnement
+    private TypeSubscription typeSubscription;
+    private LocalDate startDate;
+    private Float price;
 }

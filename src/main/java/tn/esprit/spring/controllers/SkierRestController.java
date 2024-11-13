@@ -152,7 +152,7 @@ public class SkierRestController {
         }
         return skierDTO;
     }
-    
+
     @Operation(description = "Analyze Piste Usage By Age Group")
     @GetMapping("/analyzePisteUsageByAgeGroup")
     @ApiResponses(value = {
