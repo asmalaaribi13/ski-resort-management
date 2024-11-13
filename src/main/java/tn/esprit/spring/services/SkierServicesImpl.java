@@ -104,9 +104,6 @@ public class SkierServicesImpl implements ISkierServices {
 
     /*--------------------------------------------------------------------------------------------*/
 
-
-
-
     @Override
     public Map<String, Double> analyzePisteUsageByAgeGroup() {
         LocalDate currentDate = LocalDate.now();
