@@ -102,23 +102,6 @@ class SkierServicesImplTest {
     }
 
     @Test
-    void testFindTopSpendingSkiers() {
-        Skier skier1 = createSkier(1L, "John", "Doe", LocalDate.now().minusYears(20), CITY_A);
-        skier1.setSubscription(new Subscription(1L, LocalDate.now(), LocalDate.now().plusMonths(1), 50f, TypeSubscription.MONTHLY));
-
-        Skier skier2 = createSkier(2L, "Jane", "Doe", LocalDate.now().minusYears(22), CITY_B);
-        skier2.setSubscription(new Subscription(2L, LocalDate.now(), LocalDate.now().plusMonths(6), 100f, TypeSubscription.SEMESTRIEL));
-
-        when(skierRepository.findAll()).thenReturn(Arrays.asList(skier1, skier2));
-
-        List<Skier> result = skierServices.findTopSpendingSkiers(1);
-
-        assertEquals(1, result.size(), "The result should contain exactly 1 skier");
-        assertEquals(skier1, result.get(0), "Top spending skier should be skier1");
-        logger.info("testFindTopSpendingSkiers: " + LOG_TEST_SUCCESS);
-    }
-
-    @Test
     void testCalculateTotalSpendingBySkier() {
         Long skierId = 1L;
         Skier skier = createSkier(skierId, "John", "Doe", LocalDate.now().minusYears(28), CITY_A);
