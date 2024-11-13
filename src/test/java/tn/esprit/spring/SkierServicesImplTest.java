@@ -21,6 +21,13 @@ class SkierServicesImplTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SkierServicesImplTest.class);
 
+    // Constants for repeated string literals
+    private static final String AGE_GROUP_CHILDREN = "Children (0-12)";
+    private static final String AGE_GROUP_TEENS = "Teens (13-19)";
+    private static final String AGE_GROUP_ADULTS = "Adults (20-59)";
+    private static final String AGE_GROUP_SENIORS = "Seniors (60+)";
+    private static final String TEST_SUCCEEDED = "Test succeeded!";
+
     @InjectMocks
     private SkierServicesImpl skierServices;
 
@@ -38,18 +45,15 @@ class SkierServicesImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Test for analyzePisteUsageByAgeGroup
     @Test
     void testAnalyzePisteUsageByAgeGroup() {
         LocalDate currentDate = LocalDate.now();
 
-        // Création de skieurs dans chaque groupe d'âge
         Skier skierChild = new Skier(1L, "John", "Doe", currentDate.minusYears(10), "CityA", null, new HashSet<>(), new HashSet<>());
         Skier skierTeen = new Skier(2L, "Jane", "Doe", currentDate.minusYears(15), "CityB", null, new HashSet<>(), new HashSet<>());
         Skier skierAdult = new Skier(3L, "Mike", "Smith", currentDate.minusYears(30), "CityC", null, new HashSet<>(), new HashSet<>());
         Skier skierSenior = new Skier(4L, "Anna", "Jones", currentDate.minusYears(65), "CityD", null, new HashSet<>(), new HashSet<>());
 
-        // Ajout de pistes pour chaque skieur
         skierChild.getPistes().add(new Piste(1L, "PisteA", Color.GREEN, 1200, 30, new HashSet<>()));
         skierTeen.getPistes().add(new Piste(2L, "PisteB", Color.BLUE, 800, 20, new HashSet<>()));
         skierAdult.getPistes().add(new Piste(3L, "PisteC", Color.RED, 1500, 25, new HashSet<>()));
@@ -59,25 +63,23 @@ class SkierServicesImplTest {
 
         Map<String, Double> result = skierServices.analyzePisteUsageByAgeGroup();
 
-        // Vérification pour chaque groupe d'âge
         assertEquals(4, result.size(), "The result should contain 4 age groups");
 
-        assertTrue(result.containsKey("Children (0-12)"), "Group 'Children (0-12)' should be present");
-        assertEquals(1.0, result.get("Children (0-12)"), "Piste usage for 'Children (0-12)' should be 1.0");
+        assertTrue(result.containsKey(AGE_GROUP_CHILDREN), "Group '" + AGE_GROUP_CHILDREN + "' should be present");
+        assertEquals(1.0, result.get(AGE_GROUP_CHILDREN), "Piste usage for '" + AGE_GROUP_CHILDREN + "' should be 1.0");
 
-        assertTrue(result.containsKey("Teens (13-19)"), "Group 'Teens (13-19)' should be present");
-        assertEquals(1.0, result.get("Teens (13-19)"), "Piste usage for 'Teens (13-19)' should be 1.0");
+        assertTrue(result.containsKey(AGE_GROUP_TEENS), "Group '" + AGE_GROUP_TEENS + "' should be present");
+        assertEquals(1.0, result.get(AGE_GROUP_TEENS), "Piste usage for '" + AGE_GROUP_TEENS + "' should be 1.0");
 
-        assertTrue(result.containsKey("Adults (20-59)"), "Group 'Adults (20-59)' should be present");
-        assertEquals(1.0, result.get("Adults (20-59)"), "Piste usage for 'Adults (20-59)' should be 1.0");
+        assertTrue(result.containsKey(AGE_GROUP_ADULTS), "Group '" + AGE_GROUP_ADULTS + "' should be present");
+        assertEquals(1.0, result.get(AGE_GROUP_ADULTS), "Piste usage for '" + AGE_GROUP_ADULTS + "' should be 1.0");
 
-        assertTrue(result.containsKey("Seniors (60+)"), "Group 'Seniors (60+)' should be present");
-        assertEquals(1.0, result.get("Seniors (60+)"), "Piste usage for 'Seniors (60+)' should be 1.0");
+        assertTrue(result.containsKey(AGE_GROUP_SENIORS), "Group '" + AGE_GROUP_SENIORS + "' should be present");
+        assertEquals(1.0, result.get(AGE_GROUP_SENIORS), "Piste usage for '" + AGE_GROUP_SENIORS + "' should be 1.0");
 
-        logger.info("testAnalyzePisteUsageByAgeGroup: Test succeeded!");
+        logger.info("testAnalyzePisteUsageByAgeGroup: " + TEST_SUCCEEDED);
     }
 
-    // Test for analyzeSkierEngagement
     @Test
     void testAnalyzeSkierEngagement() {
         Skier skier1 = new Skier(1L, "John", "Doe", LocalDate.now().minusYears(25), "CityA", null, new HashSet<>(), new HashSet<>());
@@ -95,46 +97,37 @@ class SkierServicesImplTest {
         assertEquals(1.5, result.get("averageCoursesPerSkier"), "Average courses per skier should be 1.5");
         assertEquals(skier1, result.get("mostActiveSkier"), "The most active skier should be skier1");
 
-        logger.info("testAnalyzeSkierEngagement: Test succeeded!");
+        logger.info("testAnalyzeSkierEngagement: " + TEST_SUCCEEDED);
     }
 
-    // Test for findTopSpendingSkiers
     @Test
     void testFindTopSpendingSkiers() {
-        // Création de deux skieurs avec des dépenses différentes
         Skier skier1 = new Skier(1L, "John", "Doe", LocalDate.now().minusYears(20), "CityA", null, new HashSet<>(), new HashSet<>());
         Skier skier2 = new Skier(2L, "Jane", "Doe", LocalDate.now().minusYears(22), "CityB", null, new HashSet<>(), new HashSet<>());
 
-        // Création de cours avec différents prix
         Course course1 = new Course(1L, 1, TypeCourse.COLLECTIVE_CHILDREN, Support.SKI, 100f, 2, new HashSet<>());
         Course course2 = new Course(2L, 1, TypeCourse.INDIVIDUAL, Support.SNOWBOARD, 200f, 3, new HashSet<>());
 
-        // Ajout d'inscriptions pour chaque skieur
         skier1.getRegistrations().add(new Registration(1L, 10, skier1, course1));
         skier1.getRegistrations().add(new Registration(2L, 11, skier1, course2));
         skier2.getRegistrations().add(new Registration(3L, 12, skier2, course1));
 
-        // Simulation des appels aux méthodes du repository
         when(skierRepository.findAll()).thenReturn(Arrays.asList(skier1, skier2));
         when(skierRepository.findById(1L)).thenReturn(Optional.of(skier1));
         when(skierRepository.findById(2L)).thenReturn(Optional.of(skier2));
 
-        // Exécution de la méthode à tester
         List<Skier> result = skierServices.findTopSpendingSkiers(1);
 
-        // Vérifications des résultats
         assertEquals(1, result.size(), "The result size should be 1 for top spender");
         assertEquals(skier1, result.get(0), "Top spending skier should be skier1");
 
-        logger.info("testFindTopSpendingSkiers: Test succeeded!");
+        logger.info("testFindTopSpendingSkiers: " + TEST_SUCCEEDED);
     }
 
-    // Test for getAverageAgeBySubscriptionType
     @Test
     void testGetAverageAgeBySubscriptionType() {
         LocalDate today = LocalDate.now();
 
-        // Création de skieurs avec chaque type d'abonnement
         Subscription annualSubscription = new Subscription(1L, today.minusYears(1), today.plusYears(1), 300f, TypeSubscription.ANNUAL);
         Subscription monthlySubscription = new Subscription(2L, today.minusMonths(1), today.plusMonths(1), 50f, TypeSubscription.MONTHLY);
         Subscription semiAnnualSubscription = new Subscription(3L, today.minusMonths(6), today.plusMonths(6), 150f, TypeSubscription.SEMESTRIEL);
@@ -144,31 +137,25 @@ class SkierServicesImplTest {
         Skier skierMonthly = new Skier(3L, "Bob", "Brown", today.minusYears(30), "CityC", monthlySubscription, new HashSet<>(), new HashSet<>());
         Skier skierSemiAnnual = new Skier(4L, "Carol", "White", today.minusYears(40), "CityD", semiAnnualSubscription, new HashSet<>(), new HashSet<>());
 
-        // Simulation de la méthode findBySubscription_TypeSub pour chaque type d'abonnement
         when(skierRepository.findBySubscription_TypeSub(TypeSubscription.ANNUAL)).thenReturn(Arrays.asList(skierAnnual1, skierAnnual2));
         when(skierRepository.findBySubscription_TypeSub(TypeSubscription.MONTHLY)).thenReturn(Collections.singletonList(skierMonthly));
         when(skierRepository.findBySubscription_TypeSub(TypeSubscription.SEMESTRIEL)).thenReturn(Collections.singletonList(skierSemiAnnual));
 
-        // Appel de la méthode à tester
         Map<TypeSubscription, Double> result = skierServices.getAverageAgeBySubscriptionType();
 
-        // Calculs d'âge moyen attendus
-        double expectedAnnualAge = (25 + 35) / 2.0;  // Moyenne des âges pour les abonnements ANNUAL
-        double expectedMonthlyAge = 30.0;            // Un seul skieur avec abonnement MONTHLY
-        double expectedSemiAnnualAge = 40.0;         // Un seul skieur avec abonnement SEMESTRIEL
+        double expectedAnnualAge = (25 + 35) / 2.0;
+        double expectedMonthlyAge = 30.0;
+        double expectedSemiAnnualAge = 40.0;
 
-        // Assertions pour vérifier les âges moyens calculés
-        assertEquals(expectedAnnualAge, result.get(TypeSubscription.ANNUAL), "L'âge moyen pour l'abonnement ANNUAL doit être " + expectedAnnualAge);
-        assertEquals(expectedMonthlyAge, result.get(TypeSubscription.MONTHLY), "L'âge moyen pour l'abonnement MONTHLY doit être " + expectedMonthlyAge);
-        assertEquals(expectedSemiAnnualAge, result.get(TypeSubscription.SEMESTRIEL), "L'âge moyen pour l'abonnement SEMESTRIEL doit être " + expectedSemiAnnualAge);
+        assertEquals(expectedAnnualAge, result.get(TypeSubscription.ANNUAL), "The average age for ANNUAL subscription should be " + expectedAnnualAge);
+        assertEquals(expectedMonthlyAge, result.get(TypeSubscription.MONTHLY), "The average age for MONTHLY subscription should be " + expectedMonthlyAge);
+        assertEquals(expectedSemiAnnualAge, result.get(TypeSubscription.SEMESTRIEL), "The average age for SEMESTRIEL subscription should be " + expectedSemiAnnualAge);
 
-        // Vérification de la taille pour s'assurer que seuls les types ajoutés sont inclus
-        assertEquals(3, result.size(), "Le résultat doit contenir uniquement les 3 types d'abonnement testés (ANNUAL, MONTHLY, SEMESTRIEL)");
+        assertEquals(3, result.size(), "The result should contain only 3 subscription types");
 
-        logger.info("testGetAverageAgeBySubscriptionType: Test succeeded!");
+        logger.info("testGetAverageAgeBySubscriptionType: " + TEST_SUCCEEDED);
     }
 
-    // Test for calculateTotalSpendingBySkier
     @Test
     void testCalculateTotalSpendingBySkier() {
         Long skierId = 1L;
@@ -187,6 +174,6 @@ class SkierServicesImplTest {
 
         assertEquals(470f, totalSpending, "Total spending should be 470");
 
-        logger.info("testCalculateTotalSpendingBySkier: Test succeeded!");
+        logger.info("testCalculateTotalSpendingBySkier: " + TEST_SUCCEEDED);
     }
 }
