@@ -26,6 +26,7 @@ public class SkierServicesImpl implements ISkierServices {
 
     @Override
     public List<Skier> retrieveAllSkiers() {
+
         return skierRepository.findAll();
     }
 
@@ -45,11 +46,11 @@ public class SkierServicesImpl implements ISkierServices {
         return skierRepository.save(skier);
     }
 
-
     @Override
     public Skier assignSkierToSubscription(Long numSkier, Long numSubscription) {
         Skier skier = skierRepository.findById(numSkier)
                 .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+
         Subscription subscription = subscriptionRepository.findById(numSubscription)
                 .orElseThrow(() -> new IllegalArgumentException(SUBSCRIPTION_NOT_FOUND));
 
@@ -57,42 +58,44 @@ public class SkierServicesImpl implements ISkierServices {
         return skierRepository.save(skier);
     }
 
+
     @Override
     public Skier addSkierAndAssignToCourse(Skier skier, Long numCourse) {
         Skier savedSkier = skierRepository.save(skier);
-        Course course = courseRepository.findById(numCourse)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
-
-        savedSkier.getRegistrations().forEach(registration -> {
-            registration.setSkier(savedSkier);
-            registration.setCourse(course);
-            registrationRepository.save(registration);
-        });
-
+        Course course = courseRepository.getById(numCourse);
+        Set<Registration> registrations = savedSkier.getRegistrations();
+        for (Registration r : registrations) {
+            r.setSkier(savedSkier);
+            r.setCourse(course);
+            registrationRepository.save(r);
+        }
         return savedSkier;
     }
 
     @Override
     public void removeSkier(Long numSkier) {
-        if (!skierRepository.existsById(numSkier)) {
-            throw new IllegalArgumentException(SKIER_NOT_FOUND);
-        }
         skierRepository.deleteById(numSkier);
     }
 
     @Override
     public Skier retrieveSkier(Long numSkier) {
-        return skierRepository.findById(numSkier)
-                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
+        return skierRepository.findById(numSkier).orElse(null);
     }
 
     @Override
     public Skier assignSkierToPiste(Long numSkieur, Long numPiste) {
-        Skier skier = skierRepository.findById(numSkieur)
-                .orElseThrow(() -> new IllegalArgumentException(SKIER_NOT_FOUND));
-        Piste piste = pisteRepository.findById(numPiste)
-                .orElseThrow(() -> new IllegalArgumentException("Piste not found"));
+        Skier skier = skierRepository.findById(numSkieur).orElse(null);
+        Piste piste = pisteRepository.findById(numPiste).orElse(null);
 
+        if (skier == null) {
+            throw new IllegalArgumentException("Skier with ID " + numSkieur + " not found");
+        }
+        if (piste == null) {
+            throw new IllegalArgumentException("Piste with ID " + numPiste + " not found");
+        }
+        if (skier.getPistes() == null) {
+            skier.setPistes(new HashSet<>());
+        }
         skier.getPistes().add(piste);
         return skierRepository.save(skier);
     }
