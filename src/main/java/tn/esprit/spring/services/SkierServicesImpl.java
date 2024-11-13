@@ -2,7 +2,6 @@ package tn.esprit.spring.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.esprit.spring.dto.SkierDTO;
 import tn.esprit.spring.entities.*;
 import tn.esprit.spring.repositories.*;
 
@@ -46,6 +45,7 @@ public class SkierServicesImpl implements ISkierServices {
         }
         return skierRepository.save(skier);
     }
+
 
     @Override
     public Skier assignSkierToSubscription(Long numSkier, Long numSubscription) {
@@ -106,17 +106,7 @@ public class SkierServicesImpl implements ISkierServices {
     /*--------------------------------------------------------------------------------------------*/
 
 
-    private SkierDTO convertToDTO(Skier skier) {
-        SkierDTO skierDTO = new SkierDTO();
-        skierDTO.setId(skier.getNumSkier());
-        skierDTO.setFirstName(skier.getFirstName());
-        skierDTO.setLastName(skier.getLastName());
-        skierDTO.setCity(skier.getCity());
-        if (skier.getSubscription() != null) {
-            skierDTO.setTypeSubscription(skier.getSubscription().getTypeSub());
-        }
-        return skierDTO;
-    }
+
 
     @Override
     public Map<String, Double> analyzePisteUsageByAgeGroup() {
