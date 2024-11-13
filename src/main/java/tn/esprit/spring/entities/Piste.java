@@ -18,14 +18,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level=AccessLevel.PRIVATE)
-@Entity
 public class Piste implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long numPiste;
 	String namePiste;
-	@Enumerated(EnumType.STRING)
 	Color color;
 	int length;
 	int slope;

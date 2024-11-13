@@ -14,7 +14,6 @@ import tn.esprit.spring.services.CourseServicesImpl;
 import java.util.Collections;
 import java.util.List;
 
-import static jdk.internal.org.objectweb.asm.util.CheckClassAdapter.verify;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +28,7 @@ public class CourseTest {
 
     @BeforeEach
     void setUp() {
-        // MockitoAnnotations.openMocks(this); This is not necessary if you're using @ExtendWith(MockitoExtension.class)
+        // No need for MockitoAnnotations.openMocks(this) as @ExtendWith handles this
     }
 
     @Test
@@ -49,6 +48,8 @@ public class CourseTest {
         assertNotNull(childrenCourses);
         assertEquals(1, childrenCourses.size());
         assertEquals(TypeCourse.COLLECTIVE_CHILDREN, childrenCourses.get(0).getTypeCourse());
+
+        // Verify that the repository's method was called once
         verify(courseRepository, times(1)).findByTypeCourse(TypeCourse.COLLECTIVE_CHILDREN);
     }
 }

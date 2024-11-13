@@ -18,11 +18,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level=AccessLevel.PRIVATE)
-@Entity
 public class Subscription implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long numSub;
 	LocalDate startDate;
 	LocalDate endDate;
