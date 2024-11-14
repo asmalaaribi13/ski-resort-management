@@ -15,7 +15,7 @@ services:
       - springboot-mysql-network
 
   springboot-app:
-    image: maissemhedfi/gestion-ski:latest
+    image: maissemhedfi/gestion-ski:${DUILD_NMBER}
     container_name: springboot-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
