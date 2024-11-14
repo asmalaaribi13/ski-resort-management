@@ -4,7 +4,7 @@ public class SubscriptionDTO {
     private String name;
     private String type;
 
-    // Getters
+    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -21,3 +21,5 @@ public class SubscriptionDTO {
         this.type = type;
     }
 }
+
+
