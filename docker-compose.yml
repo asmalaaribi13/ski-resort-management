@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-db
+    environment:
+      - MYSQL_DATABASE=maissembase
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - springboot-mysql-network
+
+  springboot-app:
+    image: maissemhedfi/gestion-ski:latest
+    container_name: springboot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ""
+
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+    networks:
+      - springboot-mysql-network
+
+volumes:
+  mysql_data:
+
+networks:
+  springboot-mysql-network:
+    driver: bridge
