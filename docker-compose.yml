@@ -20,7 +20,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ""
-
     ports:
       - "8089:8089"
     depends_on:
