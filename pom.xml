@@ -26,17 +26,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+        <!-- For Maven -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -66,15 +66,12 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- MySQL Connector dependency -->
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.8.2</version> <!-- Use the latest version -->
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -89,7 +86,6 @@
             <version>5.8.2</version> <!-- Use the latest version -->
             <scope>test</scope>
         </dependency>
-
         <!-- Mockito Dependency for JUnit 5 -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -97,8 +93,6 @@
             <version>3.12.4</version> <!-- Use the latest version -->
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
     <!-- Deploy to Nexus -->
     <distributionManagement>
@@ -129,7 +123,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -144,5 +137,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

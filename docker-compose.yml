@@ -13,7 +13,6 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - springboot-mysql-network
-
   springboot-app:
     image: maissemhedfi/gestion-ski:${BUILD_NUMBER}
     container_name: springboot-app
@@ -26,6 +25,7 @@ services:
       - "8089:8089"
     depends_on:
       - mysql
+    restart: on-failure
     networks:
       - springboot-mysql-network
 
