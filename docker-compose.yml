@@ -28,7 +28,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=maissembase
       - MYSQL_USER=root
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=
       - MYSQL_ROOT_HOST="%"
     volumes:
       - mysql_data:/var/lib/mysql
