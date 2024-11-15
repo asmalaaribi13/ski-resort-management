@@ -172,12 +172,22 @@ public class SkierServicesImpl implements ISkierServices {
     @Override
     public Map<TypeSubscription, Double> getAverageAgeBySubscriptionType() {
         LocalDate today = LocalDate.now();
+
         return Arrays.stream(TypeSubscription.values())
                 .collect(Collectors.toMap(
                         type -> type,
-                        type -> skierRepository.findBySubscription_TypeSub(type).stream()
-                                .mapToInt(skier -> today.getYear() - skier.getDateOfBirth().getYear())
-                                .average().orElse(0.0)
+                        type -> {
+                            List<Skier> skiers = skierRepository.findBySubscription_TypeSub(type);
+
+                            if (skiers == null || skiers.isEmpty()) {
+                                return 0.0; // Aucun skieur pour ce type
+                            }
+
+                            return skiers.stream()
+                                    .mapToInt(skier -> today.getYear() - skier.getDateOfBirth().getYear())
+                                    .average()
+                                    .orElse(0.0); // Calculer la moyenne, sinon 0
+                        }
                 ));
     }
 
@@ -195,43 +205,3 @@ public class SkierServicesImpl implements ISkierServices {
         return courseCost + subscriptionCost;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

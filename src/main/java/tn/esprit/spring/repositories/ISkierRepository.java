@@ -23,4 +23,6 @@ public interface ISkierRepository extends JpaRepository<Skier, Long> {
 
 
 
+
+
 }

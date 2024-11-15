@@ -70,7 +70,6 @@ public class SkierRestController {
         return skier;
     }
 
-
     @Operation(description = "Add Skier And Assign To Course")
     @PostMapping("/addSkierAndAssignToCourse/{numCourse}")
     @ApiResponses(value = {

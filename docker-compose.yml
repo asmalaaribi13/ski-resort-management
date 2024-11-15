@@ -15,7 +15,7 @@ services:
   gestion-spring-ski:
     depends_on:
       - mysqldb
-    image: samehouertani33/skier
+    image: samehouertani33/gestions-station-ski
     restart: on-failure
     ports:
       - 8081:8081
