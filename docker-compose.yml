@@ -1,24 +1,4 @@
-
 services:
-  prometheus:
-    image: prom/prometheus
-    container_name: root-prometheus-1
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - springboot-mysql-network  # Make sure Prometheus is on the same network
-  grafana:
-      image: grafana/grafana
-      container_name: grafana
-      ports:
-        - "3000:3000"
-      environment:
-        - GF_SECURITY_ADMIN_PASSWORD=admin
-      depends_on:
-        - prometheus
-      restart: always
   mysql:
     image: mysql:latest
     container_name: mysql-db
@@ -32,7 +12,6 @@ services:
       - MYSQL_PASSWORD=
       - MYSQL_ROOT_HOST="%"
       - SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
-
     volumes:
       - mysql_data:/var/lib/mysql
 
