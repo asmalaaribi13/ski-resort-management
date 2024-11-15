@@ -19,8 +19,9 @@ services:
       depends_on:
         - prometheus
       restart: always
-  mysqldb:
+  mysql:
     image: mysql:latest
+    container_name: mysql-db
     restart: unless-stopped
     ports:
       - 3306:3306
@@ -30,8 +31,13 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=
       - MYSQL_ROOT_HOST="%"
+      - SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
+
     volumes:
       - mysql_data:/var/lib/mysql
+
+    networks:
+      - springboot-mysql-network
   springboot-app:
     image: maissemhedfi/gestion-ski:${BUILD_NUMBER}
     container_name: springboot-app
@@ -39,13 +45,13 @@ services:
     networks:
       - springboot-mysql-network
     environment:
-      - spring.datasource.url=jdbc:mysql://mysqldb:3306/maissembase?createDatabaseIfNotExist=true
+      - spring.datasource.url=jdbc:mysql://mysql:3306/maissembase?createDatabaseIfNotExist=true
       - spring.datasource.username=root
       - spring.datasource.password=
     ports:
       - "8089:8089"
     depends_on:
-      - mysqldb
+      - mysql
 networks:
   springboot-mysql-network:
     driver: bridge
