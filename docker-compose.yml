@@ -4,7 +4,7 @@ services:
     image: mysql:latest
     container_name: mysql-db
     ports:
-      - 3307:3306
+      - 3308:3306
     environment:
       - MYSQL_DATABASE=maissembase
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
@@ -17,7 +17,7 @@ services:
       image: maissemhedfi/gestion-ski:${BUILD_NUMBER}
       container_name: springboot-app
       environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3307/maissembase?createDatabaseIfNotExist=true
+        SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3308/maissembase?createDatabaseIfNotExist=true
         SPRING_DATASOURCE_USERNAME: root
         SPRING_DATASOURCE_PASSWORD: ""
       ports:
