@@ -17,7 +17,7 @@ services:
       image: maissemhedfi/gestion-ski:${BUILD_NUMBER}
       container_name: springboot-app
       environment:
-        SPRING_DATASOURCE_URL: mysql://mysql-db:3306/maissembase?createDatabaseIfNotExist=true
+        SPRING_DATASOURCE_URL: mysql://mysql-db:3307/maissembase?createDatabaseIfNotExist=true
         SPRING_DATASOURCE_USERNAME: root
         SPRING_DATASOURCE_PASSWORD: ""
       ports:
