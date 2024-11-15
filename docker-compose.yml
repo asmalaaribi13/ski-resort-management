@@ -7,7 +7,8 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    restart: always
+    networks:
+      - springboot-mysql-network  # Make sure Prometheus is on the same network
   grafana:
       image: grafana/grafana
       container_name: grafana
@@ -31,7 +32,6 @@ services:
       - MYSQL_ROOT_HOST="%"
     volumes:
       - mysql_data:/var/lib/mysql
-
   springboot-app:
     image: maissemhedfi/gestion-ski:${BUILD_NUMBER}
     container_name: springboot-app
