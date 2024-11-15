@@ -25,5 +25,16 @@ public interface ISubscriptionRepository extends CrudRepository<Subscription, Lo
     @Query("select (sum(s.price))/(count(s)) from Subscription s where s.typeSub = ?1")
     Float recurringRevenueByTypeSubEquals(TypeSubscription typeSub);
 
+    // Méthode à ajouter : Récupérer les abonnements expirant bientôt
+    List<Subscription> getSubscriptionsByEndDateBetween(LocalDate startDate, LocalDate endDate);
+
+    // Méthode à ajouter : Calculer le revenu total par dates
+    @Query("select sum(s.price) from Subscription s where s.startDate between :startDate and :endDate")
+    Float calculateTotalRevenueBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // Méthode à ajouter : Calculer la durée moyenne des abonnements
+    @Query("select avg(s.endDate - s.startDate) from Subscription s")
+    Float calculateAverageSubscriptionDuration();
+
 
 }

@@ -14,6 +14,8 @@
 	<name>gestion-station-ski</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<jacoco.version>0.8.11</jacoco.version>
@@ -22,6 +24,7 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
 	</properties>
+<<<<<<< HEAD
 
 	<distributionManagement>
 		<repository>
@@ -33,6 +36,16 @@
 		</repository>
 	</distributionManagement>
 
+=======
+	<!-- Deploy to Nexus -->
+	<distributionManagement>
+		<repository>
+			<id>deploymentRepo</id>
+			<name>Nexus Repository</name>
+			<url>http://192.168.33.10:8081/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
+>>>>>>> AsmaLaaribi-5BI3-G5-Subscription
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -106,6 +119,14 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<encoding>UTF-8</encoding> <!-- Specify UTF-8 encoding -->
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
