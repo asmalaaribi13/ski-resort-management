@@ -23,7 +23,6 @@ public class SkierRestController {
     public Skier addSkier(@RequestBody Skier skier){
         return  skierServices.addSkier(skier);
     }
-
     @Operation(description = "Add Skier And Assign To Course")
     @PostMapping("/addAndAssign/{numCourse}")
     public Skier addSkierAndAssignToCourse(@RequestBody Skier skier,
