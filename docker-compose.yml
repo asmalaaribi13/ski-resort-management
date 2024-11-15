@@ -48,3 +48,4 @@ services:
       - mysqldb
 networks:
   springboot-mysql-network:
+    driver: bridge
