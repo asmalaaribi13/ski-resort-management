@@ -50,6 +50,10 @@ public class CourseTest {
         assertEquals(TypeCourse.COLLECTIVE_CHILDREN, childrenCourses.get(0).getTypeCourse());
 
         // Verify that the repository's method was called once
+
         verify(courseRepository, times(1)).findByTypeCourse(TypeCourse.COLLECTIVE_CHILDREN);
+    //Mockito functions: @ExtendWith, @Mock, @InjectMocks, when(...).thenReturn(...), and verify(...).
+        //JUnit functions: @Test, @BeforeEach, assertNotNull(...), and assertEquals(...).
     }
+
 }
