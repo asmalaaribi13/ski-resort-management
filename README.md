@@ -43,6 +43,7 @@ Gestion-Station-Ski is a comprehensive application for managing ski stations, bu
 - **Jenkins** automates the Continuous Integration/Continuous Deployment (CI/CD) pipeline.
 - The **MySQL Database** stores the application's data and is integrated with Spring Data JPA for efficient data management.
 
+![Uploading image.png…]()
 
 ## 🚀 Deployment Instructions
 
