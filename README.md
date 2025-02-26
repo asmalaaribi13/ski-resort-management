@@ -1,4 +1,4 @@
-# 🚠 Gestion-Station-Ski 🚠
+# 🚠 Ski Resort Management App 🚠
 
 Gestion-Station-Ski is a Spring Boot application designed to manage ski station operations with integrated DevOps for continuous deployment and automated data pipelines.
 
