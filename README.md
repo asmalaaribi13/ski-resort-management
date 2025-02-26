@@ -1,8 +1,5 @@
 # 🚠 Gestion-Station-Ski 🚠
 
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/gestion-station-ski)
-![Java Version](https://img.shields.io/badge/java-17%2B-blue)
-
 Gestion-Station-Ski is a Spring Boot application designed to manage ski station operations with integrated DevOps for continuous deployment and automated data pipelines.
 
 ## 📜 Overview
