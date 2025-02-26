@@ -40,3 +40,19 @@ Gestion-Station-Ski is a comprehensive application for managing ski stations, bu
 
 ## 🏗️ Architecture
 
+- The **Spring Boot** application serves as the core of the system.
+- **NGINX** acts as a reverse proxy for better load balancing.
+- The backend is containerized with **Docker** and orchestrated using **Kubernetes**.
+- **Jenkins** automates the Continuous Integration/Continuous Deployment (CI/CD) pipeline.
+- The **MySQL Database** stores the application's data and is integrated with Spring Data JPA for efficient data management.
+
+
+## 🚀 Deployment Instructions
+
+### Prerequisites
+
+- 📦 **Java 17** or later
+- 🐳 **Docker**
+- ⚙️ **Kubernetes**
+- 📋 **Jenkins**
+- 🔧 **Terraform** (optional for infrastructure as code)
