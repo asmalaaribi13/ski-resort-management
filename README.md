@@ -20,10 +20,7 @@ Gestion-Station-Ski is a comprehensive application for managing ski stations, bu
 - **DevOps**:
   - 🚀 **Jenkins** (for CI/CD)
   - 🎯 **Docker** (for containerization)
-  - 🐋 **Kubernetes** (for orchestration)
-  - 🌐 **NGINX** (for reverse proxy)
   - 📈 **Prometheus & Grafana** (for monitoring)
-  - 🏗️ **Terraform** (for infrastructure as code)
   - 🔄 **GitHub Actions** (for deployment automation)
 - **Data Pipelines**:
   - 🔄 **Apache Kafka** (for data streaming)
@@ -51,6 +48,4 @@ Gestion-Station-Ski is a comprehensive application for managing ski stations, bu
 
 - 📦 **Java 17** or later
 - 🐳 **Docker**
-- ⚙️ **Kubernetes**
 - 📋 **Jenkins**
-- 🔧 **Terraform** (optional for infrastructure as code)
