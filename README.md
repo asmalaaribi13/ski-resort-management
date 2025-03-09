@@ -6,6 +6,8 @@ Gestion-Station-Ski is a Spring Boot application designed to manage ski station 
 
 Gestion-Station-Ski is a comprehensive application for managing ski stations, built using Spring Boot. It includes features for tracking ski passes, equipment rental, and weather data. It uses DevOps tools and data pipelines to automate the deployment process and handle large amounts of data in real-time.
 
+![Image](https://github.com/user-attachments/assets/8f98656f-2133-44c9-b240-a27d09481ae5)
+
 ## 🔧 Technologies Used
 
 - **Backend**: 
